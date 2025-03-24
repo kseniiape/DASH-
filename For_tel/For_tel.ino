@@ -20,6 +20,7 @@
 #define ADDR_P2 51
 #define ADDR_P3 52
 #define ADDR_P4 53
+
 #define BALL_SEN_SIGNAL_1 A8
 #define BALL_SEN_SIGNAL_2 A9
 
@@ -33,7 +34,7 @@ double angle_new;
 uint32_t timer;
 int k = -600;
 byte data_camera[5];
-int yellow_angle, yellow_distance, blue_angle, blue_distance;
+int yellow_local_angle, yellow_distance, blue_local_angle, blue_distance;
 int y_robot, x_robot;
 const int blue_goal_y, blue_goal_x;
 const int yellow_goal_y, yellow_goal_x;
@@ -102,15 +103,15 @@ void setup()
 
 void loop()
 {
-
-  camera_data();
-  Serial.print(" ");
-  Serial.print(yellow_angle);
-  Serial.print(" ");
-  Serial.print(yellow_distance);
-  Serial.print(" ");
-  Serial.print(blue_angle);
-  Serial.print(" ");
-  Serial.print(blue_distance);
+  detect_ball();
   Serial.println(" ");
+  for (int i = 0; i < 32; i++)
+  {
+    Serial.print(ball_data[i]);
+    Serial.print(" ");
+  }
+  Serial.println(" ");
+  Serial.print(ball_distance);
+  Serial.print(" ");
+  Serial.println(ball_angle);
 }

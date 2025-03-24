@@ -14,9 +14,9 @@ void camera_data() {
       byte crc = crc8(data_camera, 4);
       if (crc == data_camera[4])
       {
-        yellow_angle = lead_to_degree_borders(data_camera[0] * 4);
+        yellow_local_angle = lead_to_degree_borders(data_camera[0] * 4);
         yellow_distance = data_camera[1] * 4;
-        blue_angle = lead_to_degree_borders(data_camera[2] * 4);
+        blue_local_angle = lead_to_degree_borders(data_camera[2] * 4);
         blue_distance = data_camera[3] * 4;
       }
     }

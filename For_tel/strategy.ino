@@ -16,19 +16,17 @@ void coordinates_robot (int local_angle, int b_l_a, int y_l_a, int b_d, int y_d)
 void ball_capture ()
 {
   if (ball_distance > min_dist_to_ball)
-  {
     move_angle_speed (ball_angle, 150);
-  }
   else
   {
     if (abs(ball_angle) < 30)
-      move_point(ball_angle, 150);
+      move_angle_speed(ball_angle, 150);
     else
-    {
-      if (ball_angle > 0)
-        move_point(ball_angle + 90, 150);
-      else
-        move_point(ball_angle - 90, 150);
-    }
+  {
+    if (ball_angle > 0)
+      move_angle_speed(ball_angle + 90, 150);
+    else
+      move_angle_speed(ball_angle - 90, 150);
   }
+ }
 }
