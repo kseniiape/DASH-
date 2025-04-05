@@ -18,7 +18,9 @@
 #define BALL_SEN_SIGNAL_1 31
 #define BALL_SEN_SIGNAL_2 26
 
-//Все для тсопов
+#define SEN_LEADLE 26
+
+//Для тсопов
 float d_alpha = 11.25;
 int ball_angle = 0, ball_distance = 0;
 
@@ -43,9 +45,18 @@ int ir_addr[16][4] = {
 
 int ball_data[32];
 
+//Дистанция до мяча при которой (или меньше) начинается объезд по окружности
+const int min_dist_to_ball;
+
+//Для камеры
+byte data_camera[5];
+int yellow_local_angle, yellow_distance, blue_local_angle, blue_distance;
+
+
 void setup()
 {
   Serial.begin(115200);
+  Serial2.begin(115200);
 
   pinMode(M1_P1, OUTPUT);
   pinMode(M1_P2, OUTPUT);
@@ -69,15 +80,13 @@ void setup()
 
 void loop()
 {
-  detect_ball();
-  Serial.println(" ");
-  for (int i = 0; i < 32; i++)
-  {
-    Serial.print(ball_data[i]);
-    Serial.print(" ");
-  }
-  Serial.println(" ");
-  Serial.print(ball_distance);
+  camera_data();
+  Serial.print(yellow_local_angle);
   Serial.print(" ");
-  Serial.println(ball_angle);
+  Serial.print(yellow_distance);
+  Serial.print(" ");
+  Serial.print(blue_local_angle);
+  Serial.print(" ");
+  Serial.print(blue_distance);
+  Serial.println(" ");
 }
