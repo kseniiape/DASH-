@@ -27,6 +27,6 @@ void detect_ball()
     x += ball_data[i] * sin((d_alpha * i) / 57.3);
     y += ball_data[i] * cos((d_alpha * i) / 57.3);
   }
-  ball_angle = lead_to_degree_borders(atan2(x, y) * 57.3);
+  ball_angle = -1*lead_to_degree_borders(atan2(x, y) * 57.3);
   ball_distance = sqrt(x * x + y * y);
 }
