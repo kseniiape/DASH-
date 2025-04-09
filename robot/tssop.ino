@@ -7,7 +7,7 @@ void detect_ball()
     digitalWrite(ADDR_P3, ir_addr[i][2]);
     digitalWrite(ADDR_P4, ir_addr[i][3]);
     delayMicroseconds(10);
-    ball_data[i] = 1 - digitalRead(BALL_SEN_SIGNAL_1);
+    ball_data[i] = !digitalRead(BALL_SEN_SIGNAL_1);
   }
 
   for (int i = 0; i < 16; i++)
@@ -17,7 +17,7 @@ void detect_ball()
     digitalWrite(ADDR_P3, ir_addr[i][2]);
     digitalWrite(ADDR_P4, ir_addr[i][3]);
     delayMicroseconds(10);
-    ball_data[i + 16] = 1 - digitalRead(BALL_SEN_SIGNAL_2);
+    ball_data[i + 16] = !digitalRead(BALL_SEN_SIGNAL_2);
   }
 
   double x = 0;

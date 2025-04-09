@@ -13,16 +13,21 @@ int gyro_data() {
     byte sense = Serial1.read();
     if (prev_sense == 255)
     {
-      int angle_gyro = (byte)sense*2;
+      int angle_gyro = lead_to_degree_borders((byte)sense*2);
       return angle_gyro;
     }
   }
 }
 
-void reset_imu()
+int turn_angle (int angle) {
+  //gyro_data();
+  int err_angle = angle - robot_local_angle;
+  int u = err_angle*kP;
+  return u;
+}
+
+
+  void reset_imu()
 {
-  if (digitalRead(BUT_DOWN) == 0)
-  {
-    null_angle = gyro_angle;
-  }
+  if (digitalRead(BUT_DOWN) == 0) null_angle = gyro_angle;
 }

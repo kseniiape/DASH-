@@ -26,7 +26,7 @@ void motor3 (int16_t power) {
   power = constrain (power, -255, 255);
   if (power < 0) {
     digitalWrite (M3_P2, 0);
-    analogWrite (M3_P2, abs(power));
+    analogWrite (M3_P1, abs(power));
   }
   else {
     digitalWrite (M3_P1, 0);

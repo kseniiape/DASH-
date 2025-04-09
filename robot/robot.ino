@@ -49,7 +49,7 @@ int ball_data[32];
 
 //Дистанция до мяча при которой (или меньше) начинается объезд по окружности
 const int min_dist_to_ball = 5;
-const int v_capture = 170;
+//const int v_capture = 100;
 
 //Для камеры
 byte data_camera[5];
@@ -73,6 +73,11 @@ int gyro_angle = 0;
 //Определение наших ворот и чужих (1 - желтые)
 int our_goal = 1;
 
+//Поворот
+const float kP = 0.5
+
+;
+int u_angle;
 
 void setup()
 {
@@ -106,24 +111,6 @@ void setup()
 
 void loop()
 {
-  reset_imu();
-  gyro_angle = gyro_data();
-  robot_local_angle = gyro_angle - null_angle;
-  detect_ball();
-  camera_data();
-  ball_capture();
-  if (our_goal == 1)
-  {
-    if (abs(ball_angle) < 30)
-    {
-      if (abs(blue_local_angle + robot_local_angle) < 30) move_angle_speed(0, v_capture);
-    }
-  }
-  else 
-  {
-    if ((abs(ball_angle) < 30) )
-    {
-      if (abs(yellow_local_angle + robot_local_angle) < 30) move_angle_speed(0, v_capture);
-    }
-  }
+  robot_update();
+  ball_capture(100);
 }
