@@ -21,6 +21,9 @@
 #define SEN_LEADLE A2
 
 #define BUT_DOWN 38
+#define BUT_UP 36
+
+#define LED_CALIBRATION 42
 
 //Для тсопов
 float d_alpha = 11.25;
@@ -69,15 +72,21 @@ int y_robot, x_robot;
 //Для гироскопа
 int null_angle = 0;
 int gyro_angle = 0;
+bool calibration = false;
 
 //Определение наших ворот и чужих (1 - желтые)
-int our_goal = 1;
+char our_goal = "YELLOW";
 
 //Поворот
-const float kP = 0.5
-
-;
+const float kP = 0.5;
 int u_angle;
+
+//Для моторов 
+bool stop_motor = true;
+
+//Время
+int timer;
+
 
 void setup()
 {
@@ -107,10 +116,21 @@ void setup()
   pinMode(SEN_LEADLE, INPUT);
   
   pinMode(BUT_DOWN, INPUT);
+  pinMode(BUT_UP, INPUT);
+
+  pinMode(LED_CALIBRATION, OUTPUT);
+
+  timer = millis();
 }
 
 void loop()
 {
   robot_update();
+  Serial.print(calibration);
+  Serial.print(" ");
+  Serial.println(stop_motor);
+  if (calibration == true and stop_motor == false)
+  {
   ball_capture(100);
+  }
 }

@@ -31,3 +31,12 @@ int turn_angle (int angle) {
 {
   if (digitalRead(BUT_DOWN) == 0) null_angle = gyro_angle;
 }
+
+void calibration_imu()
+{
+  if ((millis() - timer) > 10000) 
+  {
+    calibration = true;
+    digitalWrite(LED_CALIBRATION, HIGH);
+  }
+}

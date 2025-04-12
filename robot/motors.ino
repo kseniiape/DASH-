@@ -1,3 +1,16 @@
+void but_motors ()
+{
+  if (digitalRead(BUT_UP) == 0) 
+  {
+    if (stop_motor == true) stop_motor = false;
+    else 
+    {
+      stop_motor = true;
+      stop_m ();
+    }
+  }
+}
+
 void motor1 (int16_t power) {
   power = constrain (power, -255, 255);
   if (power < 0) {
