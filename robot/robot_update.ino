@@ -5,6 +5,6 @@ void robot_update()
   reset_imu();
   camera_data();
   detect_ball();
-  calibration_imu();
   but_motors();
+  change_goal();
 }

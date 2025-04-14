@@ -22,8 +22,13 @@
 
 #define BUT_DOWN 38
 #define BUT_UP 36
+#define BUT_ENTER 40
 
 #define LED_CALIBRATION 42
+#define LED_YELLOW 48
+#define LED_BLUE 44
+
+#define KICK_PIN1 15
 
 //Для тсопов
 float d_alpha = 11.25;
@@ -61,7 +66,7 @@ int yellow_local_angle, yellow_distance, blue_local_angle, blue_distance;
 //Для функции update
 int yaww, robot_local_angle, errOld, robot_speed;
 
-//Для датчиков мяча в ковше 
+//Для датчиков мяча в ковше
 int sen_leadle = 0;
 
 //Для расчета координат
@@ -72,20 +77,21 @@ int y_robot, x_robot;
 //Для гироскопа
 int null_angle = 0;
 int gyro_angle = 0;
-bool calibration = false;
 
-//Определение наших ворот и чужих (1 - желтые)
-char our_goal = "YELLOW";
+
+//Определение наших ворот, роли роботa
+char our_goal = 'Y';
+char robot_role = 'S';
 
 //Поворот
 const float kP = 0.5;
 int u_angle;
 
-//Для моторов 
+//Для моторов
 bool stop_motor = true;
 
 //Время
-int timer;
+int8_t timer;
 
 
 void setup()
@@ -114,23 +120,29 @@ void setup()
   pinMode( BALL_SEN_SIGNAL_2, INPUT_PULLUP);
 
   pinMode(SEN_LEADLE, INPUT);
-  
+
   pinMode(BUT_DOWN, INPUT);
   pinMode(BUT_UP, INPUT);
+  pinMode(BUT_ENTER, INPUT);
 
   pinMode(LED_CALIBRATION, OUTPUT);
+  pinMode(LED_YELLOW, OUTPUT);
+  pinMode(LED_BLUE, OUTPUT);
 
+  pinMode(KICK_PIN1, OUTPUT);
+  
   timer = millis();
+
+  //calibration_imu();
+  digitalWrite(LED_YELLOW, 1);
 }
 
 void loop()
 {
-  robot_update();
-  Serial.print(calibration);
-  Serial.print(" ");
-  Serial.println(stop_motor);
-  if (calibration == true and stop_motor == false)
+  Serial.println(analogRead(SEN_LEADLE));
+  //robot_update();
+  /*if (stop_motor == false)
   {
-  ball_capture(100);
-  }
+    ball_capture(100);
+  }*/
 }

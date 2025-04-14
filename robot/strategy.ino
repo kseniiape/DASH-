@@ -38,3 +38,23 @@ int if_sen_leadle()
   if (digitalRead(SEN_LEADLE) == 1) return 0;
   else return 1;
 }
+
+void change_goal()
+{
+  if (digitalRead(BUT_ENTER) == 0)
+  {
+    digitalWrite(KICK_PIN1, 1);
+    if (our_goal == 'Y')
+    {
+      our_goal = 'B';
+      digitalWrite(LED_YELLOW, 0);
+      digitalWrite(LED_BLUE, 1);
+    }
+    else
+    {
+      our_goal = 'Y';
+      digitalWrite(LED_BLUE, 0);
+      digitalWrite(LED_YELLOW, 1);
+    }
+  }
+}

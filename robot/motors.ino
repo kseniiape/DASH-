@@ -55,9 +55,7 @@ void motor4 (int16_t power) {
   }
   else {
     digitalWrite (M4_P1, 0);
-    analogWrite (M4_P2
-    
-    , power);
+    analogWrite (M4_P2, power);
   }
 }
 
