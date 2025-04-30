@@ -1,3 +1,5 @@
+
+
 #define M1_P1 2
 #define M1_P2 3
 
@@ -15,10 +17,10 @@
 #define ADDR_P3 27
 #define ADDR_P4 29
 
-#define BALL_SEN_SIGNAL_1 31
-#define BALL_SEN_SIGNAL_2 26
+#define BALL_SEN_SIGNAL_1 26
+#define BALL_SEN_SIGNAL_2 31
 
-#define SEN_LEADLE A2
+#define SEN_LEADLE A1 //A2 - 2   A1 - 1
 
 #define BUT_DOWN 38
 #define BUT_UP 36
@@ -28,7 +30,7 @@
 #define LED_YELLOW 48
 #define LED_BLUE 44
 
-#define KICK_PIN1 15
+#define KICK_PIN1 14
 
 //Для тсопов
 float d_alpha = 11.25;
@@ -62,6 +64,9 @@ const int min_dist_to_ball = 5;
 //Для камеры
 byte data_camera[5];
 int yellow_local_angle, yellow_distance, blue_local_angle, blue_distance;
+bool if_notice_yellow = false, if_notice_blue = false;
+bool if_notice_our = false, if_notice_enemy = false;
+
 
 //Для функции update
 int yaww, robot_local_angle, errOld, robot_speed;
@@ -70,9 +75,14 @@ int yaww, robot_local_angle, errOld, robot_speed;
 int sen_leadle = 0;
 
 //Для расчета координат
-const int blue_goal_y, blue_goal_x;
-const int yellow_goal_y, yellow_goal_x;
+int blue_goal_y, blue_goal_x = 38;
+int yellow_goal_y, yellow_goal_x = 38;
 int y_robot, x_robot;
+int o_a, e_a, x_o, y_o, x_e, y_e;
+
+int our_goal_y = 5, our_goal_x = 38, enemy_goal_y = 215, enemy_goal_x = 38;
+int our_local_angle, our_distance, enemy_local_angle, enemy_distance;
+
 
 //Для гироскопа
 int null_angle = 0;
@@ -81,10 +91,10 @@ int gyro_angle = 0;
 
 //Определение наших ворот, роли роботa
 char our_goal = 'Y';
-char robot_role = 'S';
+char robot_role = 'F';
 
 //Поворот
-const float kP = 0.5;
+const float kP = 0.8;
 int u_angle;
 
 //Для моторов
@@ -92,6 +102,10 @@ bool stop_motor = true;
 
 //Время
 int8_t timer;
+int8_t timer_kick;
+
+//Датчик мяча в ковше
+bool if_ball_in_leadle = false;
 
 
 void setup()
@@ -130,19 +144,44 @@ void setup()
   pinMode(LED_BLUE, OUTPUT);
 
   pinMode(KICK_PIN1, OUTPUT);
-  
+
   timer = millis();
+  timer_kick = millis();
+
 
   //calibration_imu();
-  digitalWrite(LED_YELLOW, 1);
 }
 
 void loop()
 {
+
+  robot_update();
+  //coordinates_robot();
   Serial.println(analogRead(SEN_LEADLE));
-  //robot_update();
-  /*if (stop_motor == false)
+  if (stop_motor == false)
   {
-    ball_capture(100);
-  }*/
+    ball_capture(150, 0);
+    //move_angle_speed (0, 180, 0);
+  }
+  /*Serial.print(enemy_distance);
+    Serial.print(" ");
+    Serial.print(our_distance);
+    Serial.print(" ");
+    Serial.print(x_robot);
+    Serial.print(" ");
+    Serial.print(y_robot);
+    Serial.println(" ");*/
+
+  /*Serial.println(" ");
+    for (int i = 0; i < 32; i++)
+    {
+    Serial.print(ball_data[i]);
+    Serial.print(" ");
+    }
+    Serial.println(" ");
+    Serial.print(ball_distance);
+    Serial.print(" ");
+    Serial.println(ball_angle);*/
+
+
 }
