@@ -8,7 +8,7 @@ void but_motors ()
       stop_motor = true;
       stop_m ();
     }
-    delay(10);
+    delay(100);
   }
 }
 

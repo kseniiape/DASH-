@@ -20,7 +20,7 @@
 #define BALL_SEN_SIGNAL_1 26
 #define BALL_SEN_SIGNAL_2 31
 
-#define SEN_LEADLE A1 //A2 - 2   A1 - 1
+#define SEN_LEADLE A2 //A2 - 2   A1 - 1
 
 #define BUT_DOWN 38
 #define BUT_UP 36
@@ -94,7 +94,7 @@ char our_goal = 'Y';
 char robot_role = 'F';
 
 //Поворот
-const float kP = 0.8;
+const float kP = 1.5;
 int u_angle;
 
 //Для моторов
@@ -107,6 +107,12 @@ int8_t timer_kick;
 //Датчик мяча в ковше
 bool if_ball_in_leadle = false;
 
+//Вратарь
+const float Kp_line_goal = 9;
+int y_goalkepeer = 50;
+const float Kp_line_goal_ball = 9;
+double angle_x;
+double angle_y;
 
 void setup()
 {
@@ -156,12 +162,13 @@ void loop()
 {
 
   robot_update();
-  //coordinates_robot();
-  Serial.println(analogRead(SEN_LEADLE));
+  coordinates_robot();
+  Serial.println(y_robot);
+  //Serial.println(analogRead(SEN_LEADLE));
   if (stop_motor == false)
   {
-    ball_capture(150, 0);
-    //move_angle_speed (0, 180, 0);
+    goalkeeper();
+    //move_angle_speed (180, -100, 0);
   }
   /*Serial.print(enemy_distance);
     Serial.print(" ");

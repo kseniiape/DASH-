@@ -1,3 +1,26 @@
+void goalkeeper()
+{
+  line_goal_ball();
+}
+
+void line_goal()
+{
+  int err_y = y_goalkepeer - y_robot;
+  if (err_y < 0) angle_y = 180;
+  else angle_y = 0;
+  int u_y = err_y*Kp_line_goal;
+  int err_x = (ball_angle + robot_local_angle) - (o_a +180);
+  if (err_x < 0) angle_x = angle_y +90;
+  else angle_x = angle_y - 90;
+  int u_x = Kp_line_goal_ball*err_x;
+  //Serial.println(e);
+  int xy = sqrt(u_y*u_y + u_x*u_x);
+  double angle_xy = atan2(u_y, u_x)*57.3;
+  
+  move_angle_speed((90-angle_xy), xy, ball_angle);
+}
+
+
 void forward()
 {
   if (if_ball_in_leadle == false) ball_capture(150, e_a);
