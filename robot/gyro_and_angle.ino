@@ -27,10 +27,7 @@ int turn_angle (int angle) {
 }
 
 
-void reset_imu()
-{
-  if (digitalRead(BUT_DOWN) == 0) null_angle = gyro_angle;
-}
+
 
 void calibration_imu()
 {

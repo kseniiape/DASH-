@@ -75,12 +75,12 @@ int yaww, robot_local_angle, errOld, robot_speed;
 int sen_leadle = 0;
 
 //Для расчета координат
-int blue_goal_y, blue_goal_x = 38;
-int yellow_goal_y, yellow_goal_x = 38;
+int blue_goal_y, blue_goal_x = 120;
+int yellow_goal_y, yellow_goal_x = 120;
 int y_robot, x_robot;
 int o_a, e_a, x_o, y_o, x_e, y_e;
 
-int our_goal_y = 5, our_goal_x = 38, enemy_goal_y = 215, enemy_goal_x = 38;
+int our_goal_y = 5, our_goal_x = 120, enemy_goal_y = 215, enemy_goal_x = 120;
 int our_local_angle, our_distance, enemy_local_angle, enemy_distance;
 
 
@@ -91,10 +91,10 @@ int gyro_angle = 0;
 
 //Определение наших ворот, роли роботa
 char our_goal = 'Y';
-char robot_role = 'F';
+char robot_role = 'G';
 
 //Поворот
-const float kP = 1.5;
+const float kP = 1.8;
 int u_angle;
 
 //Для моторов
@@ -108,11 +108,31 @@ int8_t timer_kick;
 bool if_ball_in_leadle = false;
 
 //Вратарь
-const float Kp_line_goal = 9;
-int y_goalkepeer = 50;
-const float Kp_line_goal_ball = 9;
+const float Kp_line_goal = 3.9;
+const float Kd_line_goal = 57;
+const float Ki_line_goal = 0.03;
+float err_old_y = 0;
+int y_goalkepeer1 = 50;
+int R = 60;
+//int y_goalkepeer;
+int x_goalkepeer;
+const float Kp_line_goal_ball = 3.9;
+const float Kd_line_goal_ball = 57;
+const float Ki_line_goal_ball = 0.03;
+float err_i_y = 0;
+float err_i_x = 0;
+float err_old_x = 0;
 double angle_x;
 double angle_y;
+uint16_t u_y, u_x;
+double angle_xy;
+int err_x, err_y;
+const int x2 = 88;
+const int x1 = 150;
+const int y1 = 45;
+double xy;
+int x_robot_point1;
+double angle2_robot_point;
 
 void setup()
 {
@@ -163,12 +183,23 @@ void loop()
 
   robot_update();
   coordinates_robot();
-  Serial.println(y_robot);
-  //Serial.println(analogRead(SEN_LEADLE));
+  /*Serial.print(enemy_distance);
+    Serial.print(" ");
+    Serial.print(our_distance);
+    Serial.print(" ");
+    Serial.print(x_robot);
+    Serial.print(" ");
+    Serial.print(y_robot);
+    Serial.println(" ");*/
+    /*Serial.print(x_robot);
+    Serial.print(" ");
+    Serial.print(y_robot);
+    Serial.println(" ");*/
+  //Serial.println(sign(2));
   if (stop_motor == false)
   {
     goalkeeper();
-    //move_angle_speed (180, -100, 0);
+    //move_angle_speed (0, 100, 45);
   }
   /*Serial.print(enemy_distance);
     Serial.print(" ");
