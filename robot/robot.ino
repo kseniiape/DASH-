@@ -34,7 +34,8 @@
 
 //Для тсопов
 float d_alpha = 11.25;
-int ball_angle = 0, ball_distance = 0;
+double ball_angle = 0;
+float ball_distance = 0;
 
 int ir_addr[16][4] = {
   {0, 0, 0, 0},
@@ -58,12 +59,12 @@ int ir_addr[16][4] = {
 int ball_data[32];
 
 //Дистанция до мяча при которой (или меньше) начинается объезд по окружности
-const int min_dist_to_ball = 5;
+const int min_dist_to_ball = 6;
 //const int v_capture = 100;
 
 //Для камеры
 byte data_camera[5];
-int yellow_local_angle, yellow_distance, blue_local_angle, blue_distance;
+float yellow_local_angle, yellow_distance, blue_local_angle, blue_distance;
 bool if_notice_yellow = false, if_notice_blue = false;
 bool if_notice_our = false, if_notice_enemy = false;
 
@@ -75,13 +76,14 @@ int yaww, robot_local_angle, errOld, robot_speed;
 int sen_leadle = 0;
 
 //Для расчета координат
-int blue_goal_y, blue_goal_x = 120;
-int yellow_goal_y, yellow_goal_x = 120;
+//int blue_goal_y, blue_goal_x = 120;
+//int yellow_goal_y, yellow_goal_x = 120;
 int y_robot, x_robot;
-int o_a, e_a, x_o, y_o, x_e, y_e;
+float o_a, e_a, x_o, y_o, x_e, y_e;
 
-int our_goal_y = 5, our_goal_x = 120, enemy_goal_y = 215, enemy_goal_x = 120;
-int our_local_angle, our_distance, enemy_local_angle, enemy_distance;
+int our_goal_y = 10, our_goal_x = 85, enemy_goal_y = 210, enemy_goal_x = 85;
+float our_local_angle, our_distance, enemy_local_angle, enemy_distance;
+//float k;
 
 
 //Для гироскопа
@@ -134,6 +136,14 @@ double xy;
 int x_robot_point1;
 double angle2_robot_point;
 
+//Нападающий
+double angle_forward;
+int speed_forward;
+
+//Ауты
+int out1_x, out2_x, out3_x, out4_x, out2_y, out1_y, out3_y, out4_y;
+
+
 void setup()
 {
   Serial.begin(115200);
@@ -173,7 +183,14 @@ void setup()
 
   timer = millis();
   timer_kick = millis();
-
+  out2_y = 180;//
+  out1_y = 180;//
+  out3_y = 45;//
+  out4_y = 45;//
+  out1_x = 150;//
+  out4_x = 150;//
+  out2_x = 30;//
+  out3_x = 30;//
 
   //calibration_imu();
 }
@@ -184,22 +201,36 @@ void loop()
   robot_update();
   coordinates_robot();
   /*Serial.print(enemy_distance);
-    Serial.print(" ");
-    Serial.print(our_distance);
-    Serial.print(" ");
-    Serial.print(x_robot);
+  Serial.print(" ");
+  Serial.print(our_distance);
+  Serial.print(" ");
+  Serial.print(x_robot);
+  Serial.print(" ");
+  Serial.print(y_robot);
+  Serial.print(" ");
+  Serial.print(if_notice_our);
+  Serial.print(" ");
+  Serial.print(if_notice_enemy);
+  Serial.print(" ");
+  //Serial.print(k);
+  Serial.println(" ");*/
+  /*Serial.print(x_robot);
     Serial.print(" ");
     Serial.print(y_robot);
     Serial.println(" ");*/
-    /*Serial.print(x_robot);
+  /*Serial.print(x_robot);
     Serial.print(" ");
     Serial.print(y_robot);
-    Serial.println(" ");*/
+    Serial.print(" ");
+    Serial.print(ball_distance);
+    Serial.print(" ");
+    Serial.println(angle_forward);*/
   //Serial.println(sign(2));
   if (stop_motor == false)
   {
-    goalkeeper();
+    //goalkeeper();
     //move_angle_speed (0, 100, 45);
+    forward();
   }
   /*Serial.print(enemy_distance);
     Serial.print(" ");

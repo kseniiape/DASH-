@@ -1,3 +1,59 @@
+void forward()
+{
+  ball_capture(150);
+  angle_forward = control_outs(angle_forward);
+  move_angle_speed(angle_forward, speed_forward, e_a);
+}
+
+double control_outs (double angle)
+{
+  angle = lead_to_degree_borders(angle);
+  if ((x_robot > out1_x)  or (x_robot < out2_x))
+  {
+    if (x_robot > out1_x)
+    {
+      if ((angle + robot_local_angle) < 20 or (angle + robot_local_angle) > 160)
+      {
+        if ((angle + robot_local_angle) < -90 or ((angle + robot_local_angle) > 160 and (angle + robot_local_angle) < 180)) angle = 160 - robot_local_angle;
+        else angle = 20 - robot_local_angle;
+      }
+    
+    }
+
+    else
+    {
+      if ((angle + robot_local_angle) > -20 or (angle + robot_local_angle) < -160)
+      {
+        if ((angle + robot_local_angle) > 90 or ((angle + robot_local_angle) > -180 and (angle + robot_local_angle) < -160)) angle = -160 - robot_local_angle;
+        else angle = -20 - robot_local_angle;
+      }
+    }
+  }
+
+  if ((y_robot > out1_y)  or (y_robot < out3_y))
+  {
+    if (y_robot > out1_y)
+    {
+      if (abs(angle + robot_local_angle) < 120)
+      {
+        if ((angle + robot_local_angle) > 0) angle = 120 - robot_local_angle;
+        else angle = -120 - robot_local_angle;
+      }
+    }
+
+    else
+    {
+      if (abs(angle + robot_local_angle) > 60)
+      {
+        if ((angle + robot_local_angle) > 0) angle = 60 - robot_local_angle;
+        else angle = -60 - robot_local_angle;
+      }
+    }
+  }
+  angle = lead_to_degree_borders(angle);
+  return angle;
+}
+
 void goalkeeper()
 {
   line_goal_ball();
@@ -7,66 +63,66 @@ void line_goal_ball()
 {
 
   /*if (x_robot <= x1 and x_robot >= x2)
-  {*/
-    int y_goalkepeer = sqrt((R*R) - ((x_robot - our_goal_x)*(x_robot - our_goal_x)))+our_goal_y;
+    {*/
+  int y_goalkepeer = sqrt((R * R) - ((x_robot - our_goal_x) * (x_robot - our_goal_x))) + our_goal_y;
 
-    err_y = y_goalkepeer - y_robot;
-    if (err_y < 0)
-    {
-      angle_y = 180;
-      u_y = -(err_y * Kp_line_goal + (err_y - err_old_y) * Kd_line_goal + Ki_line_goal * err_y + err_i_y);
-    }
-    else
-    {
-      angle_y = 0;
-      u_y = err_y * Kp_line_goal + (err_y - err_old_y) * Kd_line_goal + Ki_line_goal * err_y + err_i_y;
-    }
-    err_x = lead_to_degree_borders(lead_to_degree_borders((ball_angle)) - (lead_to_degree_borders(our_local_angle + 180)));
-    if (err_x > 0)
-    {
-      angle_x = 90;
-      u_x = Kp_line_goal_ball * err_x + (err_x - err_old_x) * Kd_line_goal_ball + Ki_line_goal_ball * err_x + err_i_x;
-    }
-    else
-    {
-      angle_x = -90;
-      u_x = -(Kp_line_goal_ball * err_x + (err_x - err_old_x) * Kd_line_goal_ball + Ki_line_goal_ball * err_x + err_i_x);
-    }
-    xy = sqrt(u_y*u_y+u_x*u_x);
-      if (angle_y == 0) angle_xy = sign(angle_x) * lead_to_degree_borders(90 - (atan2(u_y, u_x) * 57.3));
+  err_y = y_goalkepeer - y_robot;
+  if (err_y < 0)
+  {
+    angle_y = 180;
+    u_y = -(err_y * Kp_line_goal + (err_y - err_old_y) * Kd_line_goal + Ki_line_goal * err_y + err_i_y);
+  }
+  else
+  {
+    angle_y = 0;
+    u_y = err_y * Kp_line_goal + (err_y - err_old_y) * Kd_line_goal + Ki_line_goal * err_y + err_i_y;
+  }
+  err_x = lead_to_degree_borders(lead_to_degree_borders((ball_angle)) - (lead_to_degree_borders(our_local_angle + 180)));
+  if (err_x > 0)
+  {
+    angle_x = 90;
+    u_x = Kp_line_goal_ball * err_x + (err_x - err_old_x) * Kd_line_goal_ball + Ki_line_goal_ball * err_x + err_i_x;
+  }
+  else
+  {
+    angle_x = -90;
+    u_x = -(Kp_line_goal_ball * err_x + (err_x - err_old_x) * Kd_line_goal_ball + Ki_line_goal_ball * err_x + err_i_x);
+  }
+  xy = sqrt(u_y * u_y + u_x * u_x);
+  if (angle_y == 0) angle_xy = sign(angle_x) * lead_to_degree_borders(90 - (atan2(u_y, u_x) * 57.3));
   else angle_xy = lead_to_degree_borders(sign(angle_x) * lead_to_degree_borders((atan2(u_y, u_x) * 57.3) + 90));
   //}
-  
- /* else
-  {
-    if (x_robot > x1) x_goalkepeer = x1;
-    else x_goalkepeer = x2;
-    err_x = x_goalkepeer - x_robot;
-    if (err_x < 0)
+
+  /* else
     {
-      angle_x = 90;
-      u_x = -(Kp_line_goal_ball * err_x + (err_x - err_old_x) * Kd_line_goal_ball + Ki_line_goal_ball * err_x + err_i_x);
+     if (x_robot > x1) x_goalkepeer = x1;
+     else x_goalkepeer = x2;
+     err_x = x_goalkepeer - x_robot;
+     if (err_x < 0)
+     {
+       angle_x = 90;
+       u_x = -(Kp_line_goal_ball * err_x + (err_x - err_old_x) * Kd_line_goal_ball + Ki_line_goal_ball * err_x + err_i_x);
+     }
+     else
+     {
+       angle_x = -90;
+       u_x = Kp_line_goal_ball * err_x + (err_x - err_old_x) * Kd_line_goal_ball + Ki_line_goal_ball * err_x + err_i_x;
+     }
+     err_y = lead_to_degree_borders(lead_to_degree_borders((ball_angle + robot_local_angle)) - (lead_to_degree_borders(o_a + 180)));
+     if (err_y > 0)
+     {
+       angle_x = 180;
+       u_y = err_y * Kp_line_goal + (err_y - err_old_y) * Kd_line_goal + Ki_line_goal * err_y + err_i_y;
+     }
+     else
+     {
+       angle_y = 0;
+       u_y = -(err_y * Kp_line_goal + (err_y - err_old_y) * Kd_line_goal + Ki_line_goal * err_y + err_i_y);
+     }
+     if (angle_y == 0) angle_xy = sign(angle_x) * lead_to_degree_borders(90 - (atan2(u_y, u_x) * 57.3));
+    else angle_xy = lead_to_degree_borders(sign(angle_x) * lead_to_degree_borders((atan2(u_y, u_x) * 57.3) + 90));
     }
-    else
-    {
-      angle_x = -90;
-      u_x = Kp_line_goal_ball * err_x + (err_x - err_old_x) * Kd_line_goal_ball + Ki_line_goal_ball * err_x + err_i_x;
-    }
-    err_y = lead_to_degree_borders(lead_to_degree_borders((ball_angle + robot_local_angle)) - (lead_to_degree_borders(o_a + 180)));
-    if (err_y > 0)
-    {
-      angle_x = 180;
-      u_y = err_y * Kp_line_goal + (err_y - err_old_y) * Kd_line_goal + Ki_line_goal * err_y + err_i_y;
-    }
-    else
-    {
-      angle_y = 0;
-      u_y = -(err_y * Kp_line_goal + (err_y - err_old_y) * Kd_line_goal + Ki_line_goal * err_y + err_i_y);
-    }
-    if (angle_y == 0) angle_xy = sign(angle_x) * lead_to_degree_borders(90 - (atan2(u_y, u_x) * 57.3));
-  else angle_xy = lead_to_degree_borders(sign(angle_x) * lead_to_degree_borders((atan2(u_y, u_x) * 57.3) + 90));
-  }
-  xy = sqrt(u_y * u_y + u_x * u_x);*/
+    xy = sqrt(u_y * u_y + u_x * u_x);*/
 
 
 
@@ -103,21 +159,6 @@ void line_goal_ball()
   move_angle_speed(angle_xy, xy, ball_angle);
 }
 
-
-void forward()
-{
-  if (if_ball_in_leadle == false) ball_capture(150, e_a);
-  else
-  {
-    if (y_robot > 120)
-    {
-      if (abs(e_a - robot_local_angle) < 30) kick();
-      else turn_angle(e_a);
-    }
-    else move_angle_speed(e_a, 150, e_a);
-  }
-}
-
 float sign (float num)
 {
   if (num >= 0) return 1;
@@ -148,6 +189,7 @@ void coordinates_robot()
   if (if_notice_our == true and if_notice_enemy == true)
   {
     float k = (our_distance - enemy_distance + enemy_goal_y - our_goal_y) / (2 * (enemy_goal_y - our_goal_y));
+    //Serial.println(k);
     y_robot = (1 - k) * y_o + k * y_e;
     x_robot = (1 - k) * x_o + k * x_e;
   }
@@ -178,25 +220,30 @@ void if_notice_goal()
 
 
 
-void ball_capture (int v_capture, int angle)
+void ball_capture (int v_capture)
 {
-  /*if (ball_distance < min_dist_to_ball)
-    move_angle_speed (ball_angle, v_capture, angle);
-    else
-    {*/
-  if (abs(ball_angle) < 30)
-    move_angle_speed(ball_angle, v_capture, angle);
+  if (ball_distance < min_dist_to_ball) angle_forward = ball_angle;
+  //move_angle_speed (ball_angle, v_capture, angle);
+
   else
   {
-    if (ball_angle > 0)
-      move_angle_speed(ball_angle + 90, v_capture, angle);
+    if (abs(ball_angle) < 30)angle_forward = ball_angle;
+    //move_angle_speed(ball_angle, v_capture, angle);
+
     else
-      move_angle_speed(ball_angle - 90, v_capture, angle);
-    //}
+    {
+      if (ball_angle > 0) angle_forward = ball_angle + 90;
+      //move_angle_speed(ball_angle + 90, v_capture, angle);
+
+      else angle_forward = ball_angle - 90;
+      //move_angle_speed(ball_angle - 90, v_capture, angle);
+      //}
+
+    }
   }
+  speed_forward = v_capture;
+  //move_angle_speed (ball_angle, v_capture);
 }
-//move_angle_speed (ball_angle, v_capture);
-//}
 
 void if_sen_leadle()
 {
