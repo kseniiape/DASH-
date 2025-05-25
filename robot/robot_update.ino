@@ -8,4 +8,6 @@ void robot_update()
   but_motors();
   change_goal();
   if_notice_goal();
+  if_sen_leadle();
+  control_charge();
 }

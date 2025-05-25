@@ -38,16 +38,18 @@ void change_goal()
 
 void but_motors ()
 {
-  if (digitalRead(BUT_UP) == 0) 
-  {
-    if (stop_motor == true) stop_motor = false;
-    else 
-    {
-      stop_motor = true;
-      stop_m ();
-    }
-    delay(500);
+  static bool prev_button = 0;
+  
+  const bool button = !digitalRead(BUT_UP);
+
+  const bool forward_front = prev_button == 0 && button == 1;
+  const bool back_front = prev_button == 1 && button == 0;
+  
+  if(back_front){
+    stop_motor = !stop_motor;
   }
+ 
+  prev_button = button;    
 }
 
 void reset_imu()
