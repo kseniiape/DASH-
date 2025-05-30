@@ -90,18 +90,27 @@ void loop()
   // Serial.println(sign(2));
   // Serial.println(analogRead(SEN_LEADLE));
   // Serial.println(x_robot);
-  //Serial.println(ball_angle);
+  /*Serial.print(ball_distance);
+  Serial.print(" ");
+  Serial.print(abs(lead_to_degree_borders(ball_angle + robot_local_angle)));
+  Serial.print(" ");
+  Serial.println(millis() - timer_ball);*/
+  //Serial.println(abs(lead_to_degree_borders(ball_angle + robot_local_angle)));
+
   if (stop_motor == false)
   {
-    if (robot_role == 'G')
+    //if(robot_role == 'G')
       goalkeeper();
-    else
-      forward();
-    // move_angle_speed(0, 0, 0);
+    /*else
+      forward();*/
+    //move_angle_speed(180, 190, 0);
     // forward();
   }
   else
+  {
     stop_m();
+    timer_ball = millis();
+  }
   /*Serial.print(enemy_distance);
     Serial.print(" ");
     Serial.print(our_distance);

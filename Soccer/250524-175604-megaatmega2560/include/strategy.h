@@ -11,10 +11,10 @@
 #include "global.h"
 
 int16_t exponential_detour(double ball_angle, double distance, double k1_angle, double k2_angle, double k1_dist, double k2_dist);
-double control_outs (double angle, int speed_r);
+double control_outs(double angle, int speed_r);
 void line_goal_ball();
-double control_outs_g (double angle, int speed_r);
-float sign (float num);
+double control_outs_g(double angle, int speed_r);
+float sign(float num);
 
 void kick()
 {
@@ -38,73 +38,85 @@ void forward()
 {
   if (if_ball_in_leadle == true)
   {
-    if(abs(e_a) < 50)
+    if (abs(e_a) < 50)
     {
-      if (abs(enemy_local_angle) < 15) 
+      if (abs(enemy_local_angle) < 15)
       {
-        if (enemy_distance < 160) kick();
+        if (enemy_distance < 160)
+          kick();
         else
         {
           angle_forward = 0;
           speed_forward = 190;
-
         }
       }
-      else ball_capture(190);
+      else
+        ball_capture(190);
     }
-    else ball_capture(190);
+    else
+      ball_capture(190);
   }
 
-  else ball_capture(190);
+  else
+    ball_capture(190);
   angle_forward = control_outs(angle_forward, speed_forward);
-  //Serial.println(if_ball_in_leadle);
-  if (if_notice_enemy == true) move_angle_speed(angle_forward, speed_forward, e_a);
-  else move_angle_speed (angle_forward, speed_forward, 0);
-  //Serial.println('-');
+  // Serial.println(if_ball_in_leadle);
+  if (if_notice_enemy == true)
+    move_angle_speed(angle_forward, speed_forward, e_a);
+  else
+    move_angle_speed(angle_forward, speed_forward, 0);
+  // Serial.println('-');
 }
 
-double control_outs (double angle, int speed_r)
+double control_outs(double angle, int speed_r)
 {
   angle = lead_to_degree_borders(angle);
-  if ((x_robot > out1_x)  or (x_robot < out2_x))
+  if ((x_robot > out1_x) or (x_robot < out2_x))
   {
     if (x_robot > out1_x)
     {
       if ((lead_to_degree_borders(angle + robot_local_angle)) < 20 or (lead_to_degree_borders(angle + robot_local_angle)) > 160)
       {
-        if ((lead_to_degree_borders(angle + robot_local_angle)) < -90 or (lead_to_degree_borders(angle + robot_local_angle)) > 160) angle = 160 - robot_local_angle;
-        else angle = 20 - robot_local_angle;
+        if ((lead_to_degree_borders(angle + robot_local_angle)) < -90 or (lead_to_degree_borders(angle + robot_local_angle)) > 160)
+          angle = 160 - robot_local_angle;
+        else
+          angle = 20 - robot_local_angle;
       }
     }
     else
     {
       if ((lead_to_degree_borders(angle + robot_local_angle)) > -20 or (lead_to_degree_borders(angle + robot_local_angle)) < -160)
       {
-        if ((lead_to_degree_borders(angle + robot_local_angle)) > 90 or (lead_to_degree_borders(angle + robot_local_angle)) < -160) angle = -160 - robot_local_angle;
-        else angle = -20 - robot_local_angle;
+        if ((lead_to_degree_borders(angle + robot_local_angle)) > 90 or (lead_to_degree_borders(angle + robot_local_angle)) < -160)
+          angle = -160 - robot_local_angle;
+        else
+          angle = -20 - robot_local_angle;
       }
     }
   }
 
   if ((x_robot > out1_x2))
   {
-    if ((lead_to_degree_borders(angle + robot_local_angle)) < 20 or (lead_to_degree_borders(angle + robot_local_angle)) > 160) speed_forward = constrain(speed_r, -120, 120);
-
+    if ((lead_to_degree_borders(angle + robot_local_angle)) < 20 or (lead_to_degree_borders(angle + robot_local_angle)) > 160)
+      speed_forward = constrain(speed_r, -120, 120);
   }
 
   if ((x_robot < out2_x2))
   {
-    if ((lead_to_degree_borders(angle + robot_local_angle)) > -20 or (lead_to_degree_borders(angle + robot_local_angle)) < -160) speed_forward = constrain(speed_r, -120, 120);
+    if ((lead_to_degree_borders(angle + robot_local_angle)) > -20 or (lead_to_degree_borders(angle + robot_local_angle)) < -160)
+      speed_forward = constrain(speed_r, -120, 120);
   }
 
-  if ((y_robot > out1_y)  or (y_robot < out3_y))
+  if ((y_robot > out1_y) or (y_robot < out3_y))
   {
     if (y_robot > out1_y)
     {
       if (abs(lead_to_degree_borders(angle + robot_local_angle)) < 120)
       {
-        if ((lead_to_degree_borders(angle + robot_local_angle)) > 0) angle = 120 - robot_local_angle;
-        else angle = -120 - robot_local_angle;
+        if ((lead_to_degree_borders(angle + robot_local_angle)) > 0)
+          angle = 120 - robot_local_angle;
+        else
+          angle = -120 - robot_local_angle;
       }
     }
 
@@ -112,20 +124,24 @@ double control_outs (double angle, int speed_r)
     {
       if (abs(angle + robot_local_angle) > 60)
       {
-        if ((lead_to_degree_borders(angle + robot_local_angle)) > 0) angle = 60 - robot_local_angle;
-        else angle = -60 - robot_local_angle;
+        if ((lead_to_degree_borders(angle + robot_local_angle)) > 0)
+          angle = 60 - robot_local_angle;
+        else
+          angle = -60 - robot_local_angle;
       }
     }
   }
 
   if ((y_robot > out1_y2))
   {
-    if (abs(lead_to_degree_borders(angle + robot_local_angle)) < 120) speed_forward = constrain(speed_r, -120, 120);
+    if (abs(lead_to_degree_borders(angle + robot_local_angle)) < 120)
+      speed_forward = constrain(speed_r, -120, 120);
   }
 
   if (y_robot < out3_y2)
   {
-    if (abs(lead_to_degree_borders(angle + robot_local_angle)) > 60)speed_forward = constrain(speed_r, -120, 120);
+    if (abs(lead_to_degree_borders(angle + robot_local_angle)) > 60)
+      speed_forward = constrain(speed_r, -120, 120);
   }
 
   angle = lead_to_degree_borders(angle);
@@ -134,89 +150,112 @@ double control_outs (double angle, int speed_r)
 
 void goalkeeper()
 {
-  if (y_robot < 100)
+
+  if (y_robot < 120)
   {
-    /*if((abs(lead_to_degree_borders(ball_angle + robot_local_angle)) <= 5) and ball_distance > 4)
+      /*if((abs(lead_to_degree_borders(ball_angle + robot_local_angle)) <= 5) and ball_distance > 4)
+        {
+        move_angle_speed(0, 200, 0);
+        delay(600);
+        move_angle_speed(180, 200, 0);
+        delay(600);
+        }*/
+      // Serial.println('-');
+      line_goal_ball();
+      /*Serial.print(angle_goalkeeper);
+         Serial.print(' ');
+        Serial.println(speed_goalkeeper);*/
+      angle_goalkeeper = control_outs_g(angle_goalkeeper, speed_goalkeeper);
+      if (abs(lead_to_degree_borders(ball_angle)) <= 120)
+        move_angle_speed(angle_goalkeeper, speed_goalkeeper, ball_angle);
+      else
       {
-      move_angle_speed(0, 200, 0);
-      delay(600);
-      move_angle_speed(180, 200, 0);
-      delay(600);
-      }*/
-    //Serial.println('-');
-    line_goal_ball();
-    /*Serial.print(angle_goalkeeper);
-       Serial.print(' ');
-      Serial.println(speed_goalkeeper);*/
-    angle_goalkeeper = control_outs_g(angle_goalkeeper, speed_goalkeeper);
-    if (abs(lead_to_degree_borders(ball_angle)) <= 120) move_angle_speed(angle_goalkeeper, speed_goalkeeper, ball_angle);
-    else
+        if (ball_distance >= 7)
+          move_angle_speed(0, 0, 0);
+        else
+          move_angle_speed(angle_goalkeeper, angle_goalkeeper, lead_to_degree_borders(o_a + 180));
+      }
+    if ((abs(lead_to_degree_borders(ball_angle + robot_local_angle)) < 15) and (ball_distance <= 6.5 and (ball_distance >= 4)));
+    else timer_ball = millis();
+    if(millis() - timer_ball > 7000)
     {
-      if (ball_distance >= 7)move_angle_speed(0, 0, 0);
-      else move_angle_speed(angle_goalkeeper, angle_goalkeeper, lead_to_degree_borders(o_a + 180));
+      move_angle_speed(0, 150, 0);
+      delay(800);
+      stop_m();
+      delay(200);
+      move_angle_speed(180, 150, 0);
+      delay(800);
+      timer_ball = millis();
     }
   }
   else
   {
-    //Serial.println('+');
+    // Serial.println('+');
     angle_goalkeeper = control_outs(180, 200);
     speed_goalkeeper = speed_forward;
-    //move_angle_speed(angle_goalkeeper, angle_goalkeeper, 0);
-    if ((ball_distance >= 6) and abs(lead_to_degree_borders(ball_angle + robot_local_angle)) >= 170) move_angle_speed(0, 0, 0);
-    else move_angle_speed(angle_goalkeeper, speed_goalkeeper, 0);
+    // move_angle_speed(angle_goalkeeper, angle_goalkeeper, 0);
+    if ((ball_distance >= 6) and abs(lead_to_degree_borders(ball_angle + robot_local_angle)) >= 170)
+      move_angle_speed(0, 0, 0);
+    else
+      move_angle_speed(angle_goalkeeper, speed_goalkeeper, 0);
   }
-  //move_angle_speed(angle_goalkeeper,speed_goalkeeper, angle_rout_goalkeeper)
+  // move_angle_speed(angle_goalkeeper,speed_goalkeeper, angle_rout_goalkeeper)
 }
 
-
-double control_outs_g (double angle, int speed_r)
+double control_outs_g(double angle, int speed_r)
 {
   angle = lead_to_degree_borders(angle);
   if (y_robot < out1_y_g)
   {
     if (abs(lead_to_degree_borders(angle + robot_local_angle)) > 60)
     {
-      if ((lead_to_degree_borders(angle + robot_local_angle)) > 0) angle = 60 - robot_local_angle;
-      else angle = -60 - robot_local_angle;
+      if ((lead_to_degree_borders(angle + robot_local_angle)) > 0)
+        angle = 60 - robot_local_angle;
+      else
+        angle = -60 - robot_local_angle;
     }
   }
 
   if (y_robot < out1_y2_g)
   {
-    if (abs(lead_to_degree_borders(angle + robot_local_angle)) > 60)speed_goalkeeper = constrain(speed_r, -100, 100);
+    if (abs(lead_to_degree_borders(angle + robot_local_angle)) > 60)
+      speed_goalkeeper = constrain(speed_r, -100, 100);
   }
 
-
-
-  if ((x_robot > out1_x_g)  or (x_robot < out2_x_g))
+  if ((x_robot > out1_x_g) or (x_robot < out2_x_g))
   {
     if (x_robot > out1_x_g)
     {
       if ((lead_to_degree_borders(angle + robot_local_angle) < 20) or (lead_to_degree_borders(angle + robot_local_angle) > 160))
       {
-        if ((lead_to_degree_borders(angle + robot_local_angle) < -90) or (lead_to_degree_borders(angle + robot_local_angle) > 160)) angle = 160 - robot_local_angle;
-        else angle = 20 - robot_local_angle;
+        if ((lead_to_degree_borders(angle + robot_local_angle) < -90) or (lead_to_degree_borders(angle + robot_local_angle) > 160))
+          angle = 160 - robot_local_angle;
+        else
+          angle = 20 - robot_local_angle;
       }
     }
     else
     {
       if ((lead_to_degree_borders(angle + robot_local_angle) > -20) or (lead_to_degree_borders(angle + robot_local_angle) < -160))
       {
-        if ((lead_to_degree_borders(angle + robot_local_angle) > 90) or  (lead_to_degree_borders(angle + robot_local_angle) < -160)) angle = -160 - robot_local_angle;
-        else angle = -20 - robot_local_angle;
+        if ((lead_to_degree_borders(angle + robot_local_angle) > 90) or (lead_to_degree_borders(angle + robot_local_angle) < -160))
+          angle = -160 - robot_local_angle;
+        else
+          angle = -20 - robot_local_angle;
       }
     }
   }
 
   if ((x_robot > out1_x2_g))
   {
-    if ((lead_to_degree_borders(angle + robot_local_angle)) < 20 or (lead_to_degree_borders(angle + robot_local_angle)) > 160) speed_goalkeeper = constrain(speed_r, -100, 100);
-
+    if ((lead_to_degree_borders(angle + robot_local_angle)) < 20 or (lead_to_degree_borders(angle + robot_local_angle)) > 160)
+      speed_goalkeeper = constrain(speed_r, -100, 100);
   }
 
   if ((x_robot < out2_x2_g))
   {
-    if ((lead_to_degree_borders(angle + robot_local_angle)) > -20 or (lead_to_degree_borders(angle + robot_local_angle)) < -160)speed_goalkeeper = constrain(speed_r, -100, 100);
+    if ((lead_to_degree_borders(angle + robot_local_angle)) > -20 or (lead_to_degree_borders(angle + robot_local_angle)) < -160)
+      speed_goalkeeper = constrain(speed_r, -100, 100);
   }
   angle = lead_to_degree_borders(angle);
   return angle;
@@ -230,7 +269,7 @@ void line_goal_ball()
   int y_goalkepeer = sqrt((R * R) - ((x_robot - our_goal_x) * (x_robot - our_goal_x))) + our_goal_y;
 
   err_y = y_goalkepeer - y_robot;
-  //if (abs(err_y) < 3) err_y = 0;
+  // if (abs(err_y) < 3) err_y = 0;
   if (err_y < 0)
   {
     angle_y = 180;
@@ -255,7 +294,7 @@ void line_goal_ball()
     u_y = err_y * Kp_line_goal + (err_y - err_old_y) * Kd_line_goal + err_i_y;*/
 
   err_x = lead_to_degree_borders(lead_to_degree_borders((ball_angle + robot_local_angle)) - (lead_to_degree_borders(o_a + 180)));
-  //if (abs(err_x) < 3) err_x = 0;
+  // if (abs(err_x) < 3) err_x = 0;
   if (err_x > 0)
   {
     angle_x = 90;
@@ -266,14 +305,16 @@ void line_goal_ball()
     angle_x = -90;
     u_x = -(Kp_line_goal_ball * err_x + (err_x - err_old_x) * Kd_line_goal_ball + err_i_x);
   }
-  //u_x = Kp_line_goal_ball * err_x + (err_x - err_old_x) * Kd_line_goal_ball + err_i_x;
-  //angle_x =lead_to_degree_borders(angle_y + 90*sign(u_x)) ;
+  // u_x = Kp_line_goal_ball * err_x + (err_x - err_old_x) * Kd_line_goal_ball + err_i_x;
+  // angle_x =lead_to_degree_borders(angle_y + 90*sign(u_x)) ;
   xy = sqrt(u_y * u_y + u_x * u_x);
   xy = constrain(xy, -180, 180);
-  if (angle_y == 0) angle_xy = lead_to_degree_borders(sign(angle_x) * lead_to_degree_borders(90 - (atan2(u_y, u_x) * 57.3)) - robot_local_angle);
-  else angle_xy = lead_to_degree_borders(sign(angle_x) * lead_to_degree_borders((atan2(u_y, u_x) * 57.3) + 90));
-  //angle_xy = lead_to_degree_borders(90 - atan2(u_y, u_x) * 57.3);
-  //}
+  if (angle_y == 0)
+    angle_xy = lead_to_degree_borders(sign(angle_x) * lead_to_degree_borders(90 - (atan2(u_y, u_x) * 57.3)) - robot_local_angle);
+  else
+    angle_xy = lead_to_degree_borders(sign(angle_x) * lead_to_degree_borders((atan2(u_y, u_x) * 57.3) + 90));
+  // angle_xy = lead_to_degree_borders(90 - atan2(u_y, u_x) * 57.3);
+  // }
 
   /* else
     {
@@ -306,8 +347,6 @@ void line_goal_ball()
     }
     xy = sqrt(u_y * u_y + u_x * u_x);*/
 
-
-
   /*if (x_robot > x1)x_robot_point1 = x_robot - x1;
     else x_robot_point1 = x2 - x_robot;
     int y_robot_point1 = y_robot - y1;
@@ -318,11 +357,11 @@ void line_goal_ball()
     int r_robot_point2 = r_robot_line * sin(45 / 57.3);
     y_goalkepeer = y_robot - (r_robot_point2 * cos(45 / 57.3));*/
   // if (x_robot < x2)angle_xy + 90;
-  //else if (x_robot > x1)angle_xy - 90;
+  // else if (x_robot > x1)angle_xy - 90;
 
   err_old_y = err_y;
   err_old_x = err_x;
-  err_i_y  += Ki_line_goal * err_y;
+  err_i_y += Ki_line_goal * err_y;
   err_i_x += Ki_line_goal_ball * err_x;
   /*Serial.print(err_y);
     Serial.print(" ");
@@ -340,13 +379,15 @@ void line_goal_ball()
     Serial.println(" ");*/
   angle_goalkeeper = angle_xy;
   speed_goalkeeper = xy;
-  //move_angle_speed(angle_xy, xy, ball_angle);
+  // move_angle_speed(angle_xy, xy, ball_angle);
 }
 
-float sign (float num)
+float sign(float num)
 {
-  if (num >= 0) return 1;
-  else return -1;
+  if (num >= 0)
+    return 1;
+  else
+    return -1;
 }
 
 void coordinates_robot()
@@ -358,12 +399,12 @@ void coordinates_robot()
   x_e = enemy_goal_x + enemy_distance * sin(e_a * 3.14 / 180.0);
   y_e = enemy_goal_y - enemy_distance * cos(e_a * 3.14 / 180.0);
 
-  //float k_b = b_d/(yellow_goal_y - blue_goal_y);
-  //float k_y = (-y_d /(yellow_goal_y - blue_goal_y)) + 1;
+  // float k_b = b_d/(yellow_goal_y - blue_goal_y);
+  // float k_y = (-y_d /(yellow_goal_y - blue_goal_y)) + 1;
   if (if_notice_our == true and if_notice_enemy == true)
   {
     float k = (our_distance - enemy_distance + enemy_goal_y - our_goal_y) / (2 * (enemy_goal_y - our_goal_y));
-    //Serial.println(k);
+    // Serial.println(k);
     y_robot = (1 - k) * y_o + k * y_e;
     x_robot = (1 - k) * x_o + k * x_e;
   }
@@ -386,17 +427,17 @@ void coordinates_robot()
   y_robot = y_soft_c;
 }
 
-
-
 void if_notice_goal()
 {
-  if (our_distance == 0) if_notice_our = false;
-  else if_notice_our = true;
-  if (enemy_distance == 0) if_notice_enemy = false;
-  else if_notice_enemy = true;
+  if (our_distance == 0)
+    if_notice_our = false;
+  else
+    if_notice_our = true;
+  if (enemy_distance == 0)
+    if_notice_enemy = false;
+  else
+    if_notice_enemy = true;
 }
-
-
 
 double convert_dist(double max_dist, double dist)
 {
@@ -459,13 +500,16 @@ int16_t exponential_detour(double ball_angle, double distance, double k1_angle, 
 
 void if_sen_leadle()
 {
-  if (analogRead(SEN_LEADLE) >  650) if_ball_in_leadle = true;
-  else if_ball_in_leadle = false;
+  if (analogRead(SEN_LEADLE) > 650)
+    if_ball_in_leadle = true;
+  else
+    if_ball_in_leadle = false;
 }
 
 void control_charge()
 {
   float bat_charge = 4.3 * analogRead(CHARGE_PIN) / ((4.3 * 1023) / 5);
-  //Serial.println(analogRead(CHARGE_PIN));
-  if (bat_charge < 3.6) digitalWrite(CHARGE_LED_PIN, 1);
+  // Serial.println(analogRead(CHARGE_PIN));
+  if (bat_charge < 3.6)
+    digitalWrite(CHARGE_LED_PIN, 1);
 }
