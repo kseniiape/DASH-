@@ -30,7 +30,7 @@ void kick()
 
 void ball_capture(int v_capture)
 {
-  angle_forward = ball_angle + exponential_detour(ball_angle, ball_distance, 0.05, 0.2, 0.4, 18);
+  angle_forward = ball_angle + exponential_detour(ball_angle, ball_distance, 0.035, 0.45, 0.3, 18);
   speed_forward = v_capture;
 }
 
@@ -38,11 +38,23 @@ void forward()
 {
   if (if_ball_in_leadle == true)
   {
-    if (abs(e_a) < 60) {
-      if (enemy_distance < 160) kick();
-      ball_capture(190);
+    if(abs(e_a) < 50)
+    {
+      if (abs(enemy_local_angle) < 15) 
+      {
+        if (enemy_distance < 160) kick();
+        else
+        {
+          angle_forward = 0;
+          speed_forward = 190;
+
+        }
+      }
+      else ball_capture(190);
     }
+    else ball_capture(190);
   }
+
   else ball_capture(190);
   angle_forward = control_outs(angle_forward, speed_forward);
   //Serial.println(if_ball_in_leadle);
@@ -370,6 +382,8 @@ void coordinates_robot()
   }
   x_soft_c = k_coordinates * x_robot + x_soft_c * (1 - k_coordinates);
   y_soft_c = k_coordinates * y_robot + y_soft_c * (1 - k_coordinates);
+  x_robot = x_soft_c;
+  y_robot = y_soft_c;
 }
 
 
@@ -445,7 +459,7 @@ int16_t exponential_detour(double ball_angle, double distance, double k1_angle, 
 
 void if_sen_leadle()
 {
-  if (analogRead(SEN_LEADLE) >  700) if_ball_in_leadle = true;
+  if (analogRead(SEN_LEADLE) >  650) if_ball_in_leadle = true;
   else if_ball_in_leadle = false;
 }
 

@@ -51,31 +51,6 @@ void setup()
   timer_kick = millis();
   timer_ball = millis();
 
-  out2_y = 150; //
-  out1_y = 150; //
-  out3_y = 80;  //
-  out4_y = 80;  //
-  out1_x = 120; //
-  out4_x = 120; //
-  out2_x = 30;  //
-  out3_x = 30;  //
-
-  out2_y2 = 150; //
-  out1_y2 = 150; //
-  out3_y2 = 85;  //
-  out4_y2 = 85;  //
-  out1_x2 = 110; //
-  out4_x2 = 110; //
-  out2_x2 = 45;  //
-  out3_x2 = 45;  /////
-
-  out1_y_g = 50;
-  out1_x_g = 130;
-  out2_x_g = 50;
-  out1_y2_g = 45;
-  out1_x2_g = 125;
-  out2_x2_g = 55;
-
   // calibration_imu();
 }
 
@@ -87,7 +62,7 @@ void loop()
   /*Serial.print(x_soft_c);
   Serial.print(" ");
   Serial.println(y_soft_c);*/
-  Serial.print(enemy_distance);
+  /*Serial.print(enemy_distance);
     Serial.print(" ");
     Serial.print(our_distance);
     Serial.print(" ");
@@ -100,7 +75,7 @@ void loop()
     Serial.print(if_notice_enemy);
     Serial.print(" ");
     //Serial.print(k);
-    Serial.println(" ");
+    Serial.println(" ");*/
   /*Serial.print(x_robot);
     Serial.print(" ");
     Serial.print(y_robot);
@@ -115,7 +90,7 @@ void loop()
   // Serial.println(sign(2));
   // Serial.println(analogRead(SEN_LEADLE));
   // Serial.println(x_robot);
-  // Serial.println(ball_angle);
+  //Serial.println(ball_angle);
   if (stop_motor == false)
   {
     if (robot_role == 'G')

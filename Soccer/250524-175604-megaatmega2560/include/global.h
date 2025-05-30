@@ -31,7 +31,7 @@ int ir_addr[16][4] = {
 int ball_data[32];
 
 //Дистанция до мяча при которой (или меньше) начинается объезд по окружности
-const int min_dist_to_ball = 6;
+const float min_dist_to_ball = 6;
 
 //const int v_capture = 100;
 //double angK;
@@ -72,8 +72,8 @@ char our_goal = 'Y';
 char robot_role = 'F';
 
 //Поворот
-const float kP = 1.1;
-const float kD = 15;
+const float kP = 1.9;
+const float kD = 23;
 const float kI = 0;
 int err_old_angle;
 float err_i_angle = 0;
@@ -131,7 +131,10 @@ double x_soft_c = 0, y_soft_c = 0;
 double angle_forward;
 int speed_forward;
 
-//Ауты
-int out1_x, out2_x, out3_x, out4_x, out2_y, out1_y, out3_y, out4_y;
-int out1_x2, out2_x2, out3_x2, out4_x2, out2_y2, out1_y2, out3_y2, out4_y2;
-int out1_y_g, out1_x_g, out2_x_g, out1_y2_g, out1_x2_g, out2_x2_g;
+//Ауты нападающего
+const int out1_x = 120, out1_y = 160, out2_x = 5 , out3_y = 60; //основные границы
+const int out1_x2 = 110, out1_y2 = 170, out2_x2 = 15, out3_y2 = 70;  //границы замедления
+
+//Ауты вратаря
+const int out1_y_g = 50, out1_x_g = 130, out2_x_g = 50; //основные границы
+const int out1_y2_g = 45, out1_x2_g = 125, out2_x2_g = 55; //границы замедления

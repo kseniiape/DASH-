@@ -56,7 +56,7 @@ void detect_ball()
     }
     else
     {
-      ball_angle = -1 * lead_to_degree_borders(atan2(x, y) * 57.3) - 15;
+      ball_angle = -1 * lead_to_degree_borders(atan2(x, y) * 57.3) - 10;
       ball_distance = sqrt(x * x + y * y);
     }
   }
