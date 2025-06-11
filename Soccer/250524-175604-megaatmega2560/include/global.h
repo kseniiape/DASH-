@@ -8,6 +8,7 @@ double _data, angK, distK;
 float d_alpha = 11.25;
 double ball_angle = 0;
 float ball_distance = 0;
+bool if_ball = false;
 
 int ir_addr[16][4] = {
   {0, 0, 0, 0},
@@ -29,6 +30,9 @@ int ir_addr[16][4] = {
 };
 
 int ball_data[32];
+const int  null_ball_angle = 7;
+float ball_distance_soft;
+float k_distance = 0.97;
 
 //Дистанция до мяча при которой (или меньше) начинается объезд по окружности
 const float min_dist_to_ball = 6;
@@ -46,7 +50,7 @@ bool if_notice_our = false, if_notice_enemy = false;
 
 
 //Для функции update
-int yaww, robot_local_angle, errOld, robot_speed;
+int32_t yaww, robot_local_angle, errOld, robot_speed;
 
 //Для датчиков мяча в ковше
 int sen_leadle = 0;
@@ -69,10 +73,10 @@ int gyro_angle = 0;
 
 //Определение наших ворот, роли роботa
 char our_goal = 'Y';
-char robot_role = 'F';
+char robot_role = 'G';
 
 //Поворот
-const float kP = 1.8;
+const float kP = 1.3;
 const float kD = 23;
 const float kI = 0;
 int err_old_angle;
@@ -86,25 +90,33 @@ bool stop_motor = true;
 int32_t timer;
 int32_t timer_kick;
 int32_t timer_ball;
+int32_t timer_forward;
+int32_t timer_ball_capture;
+int32_t timer_leadle1;
+int32_t timer_leadle2;
 
 //Датчик мяча в ковше
-bool if_ball_in_leadle = false;
+bool if_ball_in_leadle1 = false;
+bool if_ball_in_leadle2 = false;
+int leadle1 = 0;
+int leadle1_soft = 0;
+float k_leadle1 = 0.8;
 
 //Вратарь
 double angle_rout_goalkeeper;
 double angle_goalkeeper;
 float speed_goalkeeper;
-const float Kp_line_goal = 3.5;
-const float Kd_line_goal = 5;
-const float Ki_line_goal = 0.002;
+const float Kp_line_goal = 4.2;
+const float Kd_line_goal = 10;
+const float Ki_line_goal = 0.004;
 float err_old_y = 0;
-int y_goalkepeer1 = 50;
-int R = 65;
+int y_goalkepeer1 = 45;
+int R = 55 ;
 //int y_goalkepeer;
 int x_goalkepeer;
-const float Kp_line_goal_ball = 3.5;
-const float Kd_line_goal_ball = 5;
-const float Ki_line_goal_ball = 0.002;
+const float Kp_line_goal_ball = 4.2;
+const float Kd_line_goal_ball = 10;
+const float Ki_line_goal_ball = 0.004;
 float err_i_y = 0;
 float err_i_x = 0;
 float err_old_x = 0;
@@ -130,11 +142,26 @@ double x_soft_c = 0, y_soft_c = 0;
 //Нападающий
 double angle_forward;
 int speed_forward;
+int state_forward = 1;
+float kp_ball_distance = 30;
+float max_distance = 7;
+int x_dribler_point = 20, y_dribler_point = 130;
+
+//Движение в точку
+int f;
+double angle_y_point, angle_x_point, angle_xy_point;
+float u_y_point, u_x_point;
+float Kp_point = 5, Kd_point = 20, Ki_point =0.005;
+int err_old_y_point, err_old_x_point, err_i_y_point, err_i_x_point;
+
+//Дрибллер
+bool dribler = true;
+
 
 //Ауты нападающего
-const int out1_x = 120, out1_y = 160, out2_x = 5 , out3_y = 60; //основные границы
-const int out1_x2 = 110, out1_y2 = 170, out2_x2 = 15, out3_y2 = 70;  //границы замедления
+const int out1_x = 130, out1_y = 155, out2_x = 40 , out3_y = 70; //основные границы
+const int out1_x2 = 120, out1_y2 = 145, out2_x2 = 50, out3_y2 = 80;  //границы замедления
 
 //Ауты вратаря
-const int out1_y_g = 20, out1_x_g = 140, out2_x_g = 10; //основные границы
-const int out1_y2_g = 25, out1_x2_g = 135, out2_x2_g = 15; //границы замедления
+const int out1_y_g = 55, out1_x_g = 150, out2_x_g = 30; //основные границы
+const int out1_y2_g = 65, out1_x2_g = 145, out2_x2_g =35; //границы замедления

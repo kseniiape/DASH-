@@ -63,5 +63,11 @@ void but_motors ()
 
 void reset_imu()
 {
-  if (digitalRead(BUT_DOWN) == 0) null_angle = gyro_angle;
+  if (digitalRead(BUT_DOWN) == 0)
+
+  {
+null_angle = gyro_angle;
+//Serial.println(null_angle);
+  }
+  // Serial.println(null_angle);
 }

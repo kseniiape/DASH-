@@ -1,4 +1,6 @@
 #pragma once
+#include "Arduino.h"
+#include "Servo.h"
 
 #define M1_P1 2
 #define M1_P2 3
@@ -17,10 +19,11 @@
 #define ADDR_P3 27
 #define ADDR_P4 29
 
-#define BALL_SEN_SIGNAL_1 26
-#define BALL_SEN_SIGNAL_2 31
+#define BALL_SEN_SIGNAL_1 31
+#define BALL_SEN_SIGNAL_2 26
 
-#define SEN_LEADLE A1 //A2 - 2   A1 - 1
+#define SEN_LEADLE1 A1 //A2 - 2   A1 - 1
+#define SEN_LEADLE2 A2
 
 #define BUT_DOWN 38
 #define BUT_UP 36
@@ -36,3 +39,5 @@
 #define CHARGE_LED_PIN 46
 
 #define ec 2.7182
+
+Servo esc;

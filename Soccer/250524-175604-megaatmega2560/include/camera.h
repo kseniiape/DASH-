@@ -26,7 +26,7 @@ void camera_data() {
   if (Serial2.available() >= 6)
   {
     byte prev_sense = Serial2.read();
-    //Serial.println(Serial1.read());
+    //// // Serial.println(Serial1.read());
     if (prev_sense == 255)
     {
 

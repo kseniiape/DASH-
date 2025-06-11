@@ -9,6 +9,11 @@
 #include "gyro_and_angle.h"
 #include "move.h"
 #include "global.h"
+#include "dribler.h"
+#include "robot_update.h"
+
+void robot_update();
+
 
 int16_t exponential_detour(double ball_angle, double distance, double k1_angle, double k2_angle, double k1_dist, double k2_dist);
 double control_outs(double angle, int speed_r);
@@ -18,7 +23,7 @@ float sign(float num);
 
 void kick()
 {
-  if ((millis() - timer_kick) > 700)
+  if ((millis() - timer_kick) > 1000)
   {
     digitalWrite(KICK_PIN1, 0);
     digitalWrite(KICK_PIN1, 1);
@@ -28,44 +33,154 @@ void kick()
   }
 }
 
-void ball_capture(int v_capture)
+void ball_capture(int v_capture, int num)
 {
-  angle_forward = ball_angle + exponential_detour(ball_angle, ball_distance, 0.035, 0.45, 0.3, 18);
-  speed_forward = v_capture;
+  int v = v_capture;
+  angle_forward = ball_angle + exponential_detour(ball_angle, ball_distance, sign(num)*0.05, sign(num)*0.2, sign(num)*0.4, sign(num)*15);
+  if (num < 0) 
+  {
+    if (ball_distance >= 3.7 and abs(ball_angle) > 110) 
+    {
+      if(abs(ball_angle) > 150) v  = 100;
+      else
+      {
+    v = (max_distance - ball_distance)*kp_ball_distance;
+    v = constrain(v, 90, 110);
+      }
+    }
+    
+  //Serial.println(v);
+  }
+  speed_forward = v;
+  /*Serial.print(ball_distance);
+Serial.print(" ");
+  Serial.println(speed_forward);*/
+  //if (if_notice_enemy == false) move_angle_speed(angle_forward, speed_forward, 0);
+  //else  move_angle_speed(angle_forward, speed_forward, e_a);
 }
 
 void forward()
 {
-  if (if_ball_in_leadle == true)
+  if (dribler == false)
   {
-    if (abs(e_a) < 50)
+  if (if_ball_in_leadle2 == true)
+  {
+    if (abs(e_a) < 60 and if_notice_enemy == true)
     {
-      if (abs(enemy_local_angle) < 15)
+      if (abs(enemy_local_angle) < 20)
       {
-        if (enemy_distance < 160)
-          kick();
-        else
-        {
+        if (enemy_distance < 140) kick();
+       
           angle_forward = 0;
-          speed_forward = 190;
+          speed_forward = 200;
         }
-      }
-      else
-        ball_capture(190);
+       else
+      ball_capture(200, 1);
     }
     else
-      ball_capture(190);
+      ball_capture(200, 1);
   }
 
   else
-    ball_capture(190);
+    ball_capture(200, 1);
+
   angle_forward = control_outs(angle_forward, speed_forward);
-  // Serial.println(if_ball_in_leadle);
+  // // // Serial.println(if_ball_in_leadle);
   if (if_notice_enemy == true)
     move_angle_speed(angle_forward, speed_forward, e_a);
+
+
   else
     move_angle_speed(angle_forward, speed_forward, 0);
   // Serial.println('-');
+  }
+
+ else
+  {
+    if (abs(ball_angle) >= 140) state_forward = 2;
+    else if (abs(ball_angle) <= 120) state_forward = 1;
+
+    switch (state_forward)
+    {
+    case 1:
+
+      if (if_ball_in_leadle2 == true)
+  {
+    if (abs(e_a) < 60 and if_notice_enemy == true)
+    {
+      if (abs(enemy_local_angle) < 20)
+      {
+        if (enemy_distance < 140) kick();
+       
+          angle_forward = 0;
+          speed_forward = 200;
+        }
+       else
+      ball_capture(200, 1);
+    }
+    else
+      ball_capture(200, 1);
+  }
+
+  else ball_capture(200, 1);
+    angle_forward = control_outs(angle_forward, speed_forward);
+    if (if_notice_enemy == true)  move_angle_speed(angle_forward, speed_forward, e_a);
+    else move_angle_speed(angle_forward, speed_forward, 0);
+    dribler_power(1000);
+  break;
+  //angle_forward = control_outs(angle_forward, speed_forward);
+  // // // Serial.println(if_ball_in_leadle); 
+    default:
+      if (if_ball_in_leadle1 == true)
+      {
+       if (millis() - timer_ball_capture < 1000) 
+        {
+          //Serial.println('+');
+          dribler_power(1650);
+      speed_forward = 0;
+      //Serial.println("+");
+        }
+        else
+        {
+          
+          dribler_power(1600);
+            if((abs(x_robot - x_dribler_point) < 13) and (abs(y_robot - y_dribler_point) < 13))
+            {
+              turn(190);
+              delay(200);
+              dribler_power(1000);
+              break;
+            }
+            else 
+            {
+              dribler_power(1600);
+              move_point(x_dribler_point, y_dribler_point);
+              angle_forward = control_outs(angle_forward, speed_forward);
+              move_angle_speed(angle_forward, speed_forward, 0, robot_local_angle);
+              break;
+            }
+        }
+      }
+      else
+      {   
+        //Serial.println("-");
+          timer_ball_capture = millis();
+           ball_capture(200, -1);
+          if (ball_distance >= 4.5 and abs(ball_angle) >= 130) dribler_power(1500);
+          else dribler_power(1000);
+        
+      }
+      angle_forward = control_outs(angle_forward, speed_forward);
+    if (if_notice_enemy == true)  move_angle_speed(angle_forward, speed_forward, e_a);
+    else move_angle_speed(angle_forward, speed_forward, 0);
+
+      break;
+  
+    }
+
+    
+  }
+
 }
 
 double control_outs(double angle, int speed_r)
@@ -148,11 +263,49 @@ double control_outs(double angle, int speed_r)
   return angle;
 }
 
+void coordinates_robot()
+{
+  o_a = lead_to_degree_borders(our_local_angle + robot_local_angle);
+  e_a = lead_to_degree_borders(enemy_local_angle + robot_local_angle);
+  x_o = our_goal_x + our_distance * sin((180 - o_a) * 3.14 / 180.0);
+  y_o = our_goal_y + our_distance * cos((180 - o_a) * 3.14 / 180.0);
+  x_e = enemy_goal_x + enemy_distance * sin(e_a * 3.14 / 180.0);
+  y_e = enemy_goal_y - enemy_distance * cos(e_a * 3.14 / 180.0);
+
+  // float k_b = b_d/(yellow_goal_y - blue_goal_y);
+  // float k_y = (-y_d /(yellow_goal_y - blue_goal_y)) + 1;
+  if (if_notice_our == true and if_notice_enemy == true)
+  {
+    float k = (our_distance - enemy_distance + enemy_goal_y - our_goal_y) / (2 * (enemy_goal_y - our_goal_y));
+    // // // Serial.println(k);
+    y_robot = (1 - k) * y_o + k * y_e;
+    x_robot = (1 - k) * x_o + k * x_e;
+  }
+  else
+  {
+    if (if_notice_our == true)
+    {
+      y_robot = y_o;
+      x_robot = x_o;
+    }
+    else
+    {
+      y_robot = y_e;
+      x_robot = x_e;
+    }
+  }
+  x_soft_c = k_coordinates * x_robot + x_soft_c * (1 - k_coordinates);
+  y_soft_c = k_coordinates * y_robot + y_soft_c * (1 - k_coordinates);
+  x_robot = x_soft_c;
+  y_robot = y_soft_c;
+}
+
 void goalkeeper()
 {
 
   if (y_robot < 120)
   {
+  
       /*if((abs(lead_to_degree_borders(ball_angle + robot_local_angle)) <= 5) and ball_distance > 4)
         {
         move_angle_speed(0, 200, 0);
@@ -160,37 +313,38 @@ void goalkeeper()
         move_angle_speed(180, 200, 0);
         delay(600);
         }*/
-      // Serial.println('-');
+      // // // Serial.println('-');
       line_goal_ball();
-      /*Serial.print(angle_goalkeeper);
-         Serial.print(' ');
-        Serial.println(speed_goalkeeper);*/
+      /*// Serial.print(angle_goalkeeper);
+         // Serial.print(' ');
+        // // Serial.println(speed_goalkeeper);*/
       angle_goalkeeper = control_outs_g(angle_goalkeeper, speed_goalkeeper);
-      if (abs(lead_to_degree_borders(ball_angle)) <= 120)
+      if (abs(ball_angle) <= 120)
         move_angle_speed(angle_goalkeeper, speed_goalkeeper, ball_angle);
       else
       {
-        if (ball_distance >= 7)
+        if (ball_distance >= 7.2)
           move_angle_speed(0, 0, 0);
         else
           move_angle_speed(angle_goalkeeper, angle_goalkeeper, lead_to_degree_borders(o_a + 180));
       }
-    if ((abs(lead_to_degree_borders(ball_angle + robot_local_angle)) < 15) and (ball_distance <= 6.5 and (ball_distance >= 4)));
+    if ((abs(lead_to_degree_borders(ball_angle + robot_local_angle)) < 15) and (ball_distance <= 7 and ball_distance >= 3.5));
     else timer_ball = millis();
-    if(millis() - timer_ball > 7000)
+    if(millis() - timer_ball > 5000)
     {
-      move_angle_speed(0, 150, 0);
-      delay(800);
-      stop_m();
-      delay(200);
-      move_angle_speed(180, 150, 0);
-      delay(800);
+      timer_forward = millis();
+      while ((millis() - timer_forward) < 10000)
+      {
+        robot_update();
+        coordinates_robot();
+        forward();
+      }
       timer_ball = millis();
     }
-  }
+}
   else
   {
-    // Serial.println('+');
+    // // // Serial.println('+');
     angle_goalkeeper = control_outs(180, 200);
     speed_goalkeeper = speed_forward;
     // move_angle_speed(angle_goalkeeper, angle_goalkeeper, 0);
@@ -280,19 +434,8 @@ void line_goal_ball()
     angle_y = 0;
     u_y = err_y * Kp_line_goal + (err_y - err_old_y) * Kd_line_goal + err_i_y;
   }
-  /*if (err_y < 0)
-    {
-    angle_y = 180;
-    u_y = -(err_y * Kp_line_goal + (err_y - err_old_y) * Kd_line_goal + err_i_y);
-    }
-    else
-    {
-    angle_y = 0;
-    u_y = err_y * Kp_line_goal + (err_y - err_old_y) * Kd_line_goal + err_i_y;
-    }
-    //angle_y = 0;
-    u_y = err_y * Kp_line_goal + (err_y - err_old_y) * Kd_line_goal + err_i_y;*/
-
+  u_y = constrain(u_y, -200, 200);
+  //u_y = err_y * Kp_line_goal + (err_y - err_old_y) * Kd_line_goal + err_i_y; 
   err_x = lead_to_degree_borders(lead_to_degree_borders((ball_angle + robot_local_angle)) - (lead_to_degree_borders(o_a + 180)));
   // if (abs(err_x) < 3) err_x = 0;
   if (err_x > 0)
@@ -305,80 +448,32 @@ void line_goal_ball()
     angle_x = -90;
     u_x = -(Kp_line_goal_ball * err_x + (err_x - err_old_x) * Kd_line_goal_ball + err_i_x);
   }
+  //u_x = Kp_line_goal_ball * err_x + (err_x - err_old_x) * Kd_line_goal_ball + err_i_x;
   // u_x = Kp_line_goal_ball * err_x + (err_x - err_old_x) * Kd_line_goal_ball + err_i_x;
   // angle_x =lead_to_degree_borders(angle_y + 90*sign(u_x)) ;
   xy = sqrt(u_y * u_y + u_x * u_x);
-  xy = constrain(xy, -180, 180);
+  xy = constrain(xy, -230, 230);
   if (angle_y == 0)
-    angle_xy = lead_to_degree_borders(sign(angle_x) * lead_to_degree_borders(90 - (atan2(u_y, u_x) * 57.3)) - robot_local_angle);
+    angle_xy = lead_to_degree_borders(sign(angle_x) * lead_to_degree_borders(90 - (atan2(u_y, u_x) * 57.3)));
   else
     angle_xy = lead_to_degree_borders(sign(angle_x) * lead_to_degree_borders((atan2(u_y, u_x) * 57.3) + 90));
-  // angle_xy = lead_to_degree_borders(90 - atan2(u_y, u_x) * 57.3);
+  //angle_xy = lead_to_degree_borders(90 - atan2(u_y, u_x) * 57.3);
   // }
-
-  /* else
-    {
-     if (x_robot > x1) x_goalkepeer = x1;
-     else x_goalkepeer = x2;
-     err_x = x_goalkepeer - x_robot;
-     if (err_x < 0)
-     {
-       angle_x = 90;
-       u_x = -(Kp_line_goal_ball * err_x + (err_x - err_old_x) * Kd_line_goal_ball + Ki_line_goal_ball * err_x + err_i_x);
-     }
-     else
-     {
-       angle_x = -90;
-       u_x = Kp_line_goal_ball * err_x + (err_x - err_old_x) * Kd_line_goal_ball + Ki_line_goal_ball * err_x + err_i_x;
-     }
-     err_y = lead_to_degree_borders(lead_to_degree_borders((ball_angle + robot_local_angle)) - (lead_to_degree_borders(o_a + 180)));
-     if (err_y > 0)
-     {
-       angle_x = 180;
-       u_y = err_y * Kp_line_goal + (err_y - err_old_y) * Kd_line_goal + Ki_line_goal * err_y + err_i_y;
-     }
-     else
-     {
-       angle_y = 0;
-       u_y = -(err_y * Kp_line_goal + (err_y - err_old_y) * Kd_line_goal + Ki_line_goal * err_y + err_i_y);
-     }
-     if (angle_y == 0) angle_xy = sign(angle_x) * lead_to_degree_borders(90 - (atan2(u_y, u_x) * 57.3));
-    else angle_xy = lead_to_degree_borders(sign(angle_x) * lead_to_degree_borders((atan2(u_y, u_x) * 57.3) + 90));
-    }
-    xy = sqrt(u_y * u_y + u_x * u_x);*/
-
-  /*if (x_robot > x1)x_robot_point1 = x_robot - x1;
-    else x_robot_point1 = x2 - x_robot;
-    int y_robot_point1 = y_robot - y1;
-    int r_robot_point1 = sqrt( x_robot_point1 * x_robot_point1 + y_robot_point1 * y_robot_point1);
-    int angle_robot_point2 = lead_to_degree_borders(90 - asin(x_robot_point1 / r_robot_point1) * 57.3);
-    angle2_robot_point2 = 180 - angle_robot_point2 - (180 - 45);
-    int r_robot_line = (r_robot_point1 / sin((180 - 45) / 57.3)) * sin(angle2_robot_point2 / 57.3);
-    int r_robot_point2 = r_robot_line * sin(45 / 57.3);
-    y_goalkepeer = y_robot - (r_robot_point2 * cos(45 / 57.3));*/
-  // if (x_robot < x2)angle_xy + 90;
-  // else if (x_robot > x1)angle_xy - 90;
+    //angle_xy = lead_to_degree_borders(90 - lead_to_degree_borders((atan2(u_y, u_x) * 57.3)));
 
   err_old_y = err_y;
   err_old_x = err_x;
   err_i_y += Ki_line_goal * err_y;
   err_i_x += Ki_line_goal_ball * err_x;
-  /*Serial.print(err_y);
-    Serial.print(" ");
-    Serial.print(err_x);
-    Serial.print(" ");
-    Serial.print(u_y);
-    Serial.print(" ");
-    Serial.print(u_x);
-    Serial.print(" ");
-    //Serial.print(sq_x + sq_y);
-    Serial.print(" ");
-    Serial.print(angle_xy);
-    Serial.print(" ");
-    Serial.print(xy);
-    Serial.println(" ");*/
+ 
   angle_goalkeeper = angle_xy;
   speed_goalkeeper = xy;
+  /*Serial.print(angle_xy);
+  Serial.print(" ");
+    Serial.println(xy);*/
+
+
+
   // move_angle_speed(angle_xy, xy, ball_angle);
 }
 
@@ -390,42 +485,7 @@ float sign(float num)
     return -1;
 }
 
-void coordinates_robot()
-{
-  o_a = lead_to_degree_borders(our_local_angle + robot_local_angle);
-  e_a = lead_to_degree_borders(enemy_local_angle + robot_local_angle);
-  x_o = our_goal_x + our_distance * sin((180 - o_a) * 3.14 / 180.0);
-  y_o = our_goal_y + our_distance * cos((180 - o_a) * 3.14 / 180.0);
-  x_e = enemy_goal_x + enemy_distance * sin(e_a * 3.14 / 180.0);
-  y_e = enemy_goal_y - enemy_distance * cos(e_a * 3.14 / 180.0);
 
-  // float k_b = b_d/(yellow_goal_y - blue_goal_y);
-  // float k_y = (-y_d /(yellow_goal_y - blue_goal_y)) + 1;
-  if (if_notice_our == true and if_notice_enemy == true)
-  {
-    float k = (our_distance - enemy_distance + enemy_goal_y - our_goal_y) / (2 * (enemy_goal_y - our_goal_y));
-    // Serial.println(k);
-    y_robot = (1 - k) * y_o + k * y_e;
-    x_robot = (1 - k) * x_o + k * x_e;
-  }
-  else
-  {
-    if (if_notice_our == true)
-    {
-      y_robot = y_o;
-      x_robot = x_o;
-    }
-    else
-    {
-      y_robot = y_e;
-      x_robot = x_e;
-    }
-  }
-  x_soft_c = k_coordinates * x_robot + x_soft_c * (1 - k_coordinates);
-  y_soft_c = k_coordinates * y_robot + y_soft_c * (1 - k_coordinates);
-  x_robot = x_soft_c;
-  y_robot = y_soft_c;
-}
 
 void if_notice_goal()
 {
@@ -498,18 +558,40 @@ int16_t exponential_detour(double ball_angle, double distance, double k1_angle, 
   //move_angle_speed (ball_angle, v_capture);
   }*/
 
-void if_sen_leadle()
+void if_sen_leadle1()
 {
-  if (analogRead(SEN_LEADLE) > 650)
-    if_ball_in_leadle = true;
-  else
-    if_ball_in_leadle = false;
+  
+   leadle1_soft=  k_leadle1 * analogRead(SEN_LEADLE1) + leadle1_soft * (1 - k_leadle1);
+   //Serial.println(leadle1_soft);
+   if (leadle1_soft > 20)
+   {
+    if_ball_in_leadle1 = true;
+    timer_leadle1 = millis();
+   }
+    else
+    {
+      if ((millis() - timer_leadle1) > 200) if_ball_in_leadle1 = false;
+    }
+}
+
+void if_sen_leadle2()
+{
+  //Serial.println(analogRead(SEN_LEADLE2));
+  if (analogRead(SEN_LEADLE2) > 800)
+  {
+    if_ball_in_leadle2 = true;
+    timer_leadle2 = millis();
+  }
+    else
+{
+    if ((millis() - timer_leadle2) > 100) if_ball_in_leadle2 = false; 
+}
 }
 
 void control_charge()
 {
   float bat_charge = 4.3 * analogRead(CHARGE_PIN) / ((4.3 * 1023) / 5);
-  // Serial.println(analogRead(CHARGE_PIN));
+  // // // Serial.println(analogRead(CHARGE_PIN));
   if (bat_charge < 3.6)
     digitalWrite(CHARGE_LED_PIN, 1);
 }
