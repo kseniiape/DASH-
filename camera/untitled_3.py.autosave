@@ -7,8 +7,8 @@ robot = 1 #2 - g, 1 - f
 if robot == 1:
 
     EXPOSURE_TIME_SCALE = 0.4
-    yellow_threshold = [(0, 100, -128, 127, 30, 127)]
-    blue_threshold = [(0, 100, -128, -7, -128, -2)]
+    yellow_threshold = [(46, 100, 3, 127, 30, 127)]
+    blue_threshold = [(22, 100, -128, 127, -128, -3)]
     exposure = 40_000
     gain = 25
     center  = [165,122]
