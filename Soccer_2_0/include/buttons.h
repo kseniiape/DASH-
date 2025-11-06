@@ -11,8 +11,8 @@ void change_goal()
 {
   if (digitalRead(BUT_ENTER) == 0)
   {
-    kick();
-    delay(200);
+    //kick();
+    delay(300);
     if (goal::our_color == 'Y')
     {
       goal::our_color = 'B';

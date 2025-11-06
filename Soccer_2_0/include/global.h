@@ -3,16 +3,17 @@
 
 const float k_coordinates = 0.8;
 const int speed_constrain = 110;
-const float kP_turn_angle = 1.8;
-const float kD_turn_angle = 5;
+const float kP_turn_angle = 3.1;
+const float kD_turn_angle = 6;
+const float kI_turn_angle = 0.002;
 bool if_ball_in_leadle2 = 0;
 bool if_ball_in_leadle1 = 0;
 bool stop_motors = true;
 
 //Дистанция до мяча при которой (или меньше) начинается объезд по окружности
-const float min_dist_to_ball = 4.5;
+const float min_dist_to_ball = 7;
 
-bool dribler = 0;
+bool dribler = 1;
 struct tssop
 {
     const static inline int ir_addr[16][4] = {
@@ -42,7 +43,7 @@ struct ball
 {
     static inline double angle = 0;
     static inline float distance = 0;
-    static inline double null_angle = 6;
+    static inline double null_angle = 13;
     
 };
 
@@ -64,16 +65,17 @@ struct forward
 
     struct right_near_point
     {
-      static inline int x = -55;
+      static inline int x = -60;
       static inline int y = 50;
     };
 
     struct left_far_point
     {
-      static inline int x = 55;
-      static inline int y = 155;
+      static inline int x = 60;
+      static inline int y = 160;
     };
   };
+
   
     
 

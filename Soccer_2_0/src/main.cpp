@@ -67,9 +67,11 @@ void setup()
   timers::ball_state = millis();
   timers::forward_state = millis();
   timers::d_capture = millis();
+  timers::test = millis();
   
   if(robot::role == 2) dribler = false;
   dribler_config();
+
 
 }
 
@@ -100,24 +102,43 @@ void loop()
     #if ROLE == 1
     //goalkeeper_s();
     forward();
+    //turn(200);
     #else
     //forward();
-    goalkeeper_s();
+    //goalkeeper_s();
     #endif
     
     //goalkeeper_s();
     //move_to_point(0, 140);
-    //move_angle_speed(0, 0, 0);
+
+
+    /*timers::test = millis();
+   while(millis() - timers::test < 1200)
+    {
+      robot_update();
+      move_angle_speed(0, 120, 0);
+    }
+    timers::test = millis();
+
+    while(millis() - timers::test < 1200)
+    {
+      move_angle_speed(180, 120, 0);
+      robot_update();
+    }
+    timers::test = millis();*/
+
+
     //Serial.println(robot::local_angle);
-    //move_angle_speed(0, 150, ball::angle+robot::local_angle);
+    //move_angle_speed(0, 0, 0);
     //goalkeeper_s();
-    //dribler_power(1500);
+    ///dribler_power(1500);
     //move_angle_speed(0, 0, 0);
     //turn(200);
     
   }
   else
   {
+    timers::test = millis(); 
     timers::ball_state = millis();
     dribler_power(1000);
     stop_m();

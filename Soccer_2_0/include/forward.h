@@ -44,13 +44,16 @@ double _data;
 
 void ball_capture()
 {
-    forward::angle = ball::angle + exponential_detour(ball::angle, ball::distance, 0.011, 0.071, 2.1, 20);//0.022, 0.142, 23, 60
-    //move_angle_speed(forward::angle, 200, 0);
-    // Serial.println(forward::angle);
+    forward::angle = ball::angle + exponential_detour(ball::angle, ball::distance, 0.7, 0.15, 0.3, 1.4);//0.022, 0.142, 23, 60
+    //forward::speed = 200;
+    if(ball::distance > 7 && abs(ball::angle) > 20) forward::speed = 130;
+    //move_angle_speed(forward::angle, forward::speed, 0);
+    //Serial.println(forward::angle);
 }
 
+
 void d_ball_capture() {
-    forward::angle = 170;
+    forward::angle = 180;
 }
 
 
@@ -80,7 +83,7 @@ void control_outs_forward(double angle, int speed)
         //     if(absolute_angle > -20 || absolute_angle < -160)speed = constrain(speed, -speed_constrain, speed_constrain);
         // }
     }
-    else if (robot::x < forward::outs::right_near_point::x + forward::outs::dist_slowdown) speed = constrain(speed, -speed_constrain, speed_constrain);
+    else if (robot::x < forward::outs::right_near_point::x + forward::outs::dist_slowdown ) speed = constrain(speed, -speed_constrain, speed_constrain);
     else if (robot::x > forward::outs::left_far_point::x)
     {
         //Serial.println('/');
@@ -99,7 +102,7 @@ void control_outs_forward(double angle, int speed)
         }*/
        angle = lead_to_degree_borders(90 - robot::local_angle);
     }
-    else if (robot::x > forward::outs::left_far_point::x - forward::outs::dist_slowdown) speed = constrain(speed, -speed_constrain, speed_constrain);
+    else if (robot::x > forward::outs::left_far_point::x - forward::outs::dist_slowdown ) speed = constrain(speed, -speed_constrain, speed_constrain);
 
 
     if(robot::y < forward::outs::right_near_point::y)
@@ -138,7 +141,7 @@ void control_outs_forward(double angle, int speed)
         }*/
 
     }
-    else if(robot::y > forward::outs::left_far_point::y - forward::outs::dist_slowdown) speed = constrain(speed, -speed_constrain, speed_constrain);
+    else if(robot::y > forward::outs::left_far_point::y - forward::outs::dist_slowdown ) speed = constrain(speed, -speed_constrain, speed_constrain);
     forward::angle = angle;
     forward::speed = speed;
 /*Serial.print(forward::angle);
@@ -151,7 +154,7 @@ void forward()
     double angle = 0;
 
     //1 - capture, 2 - move to goal, 3 - kick
-    forward::speed = 200;
+    forward::speed = 210;
     //ball_capture();
     
     if (!dribler)
@@ -165,8 +168,9 @@ void forward()
                 break;
             case 2:
                 forward::angle = 0;
-                if (goal::enemy::distance < 100) state = 3;
-                else if (!if_ball_in_leadle1) state = 1;
+                //if (goal::enemy::distance < 100) state = 3;
+                //else 
+                if (!if_ball_in_leadle1) state = 1;
                 break;
             case 3:
                 kick();
@@ -203,8 +207,9 @@ void forward()
                         break;
                     case 2:
                         forward::angle = 0;
-                        if (goal::enemy::distance < 120) state1 = 3;
-                        else if (!if_ball_in_leadle1) state1 = 1;
+                        //if (goal::enemy::distance < 120) state1 = 3;
+                        //else 
+                        if (!if_ball_in_leadle1) state1 = 1;
                         break;
                     case 3:
                         kick();
@@ -241,7 +246,7 @@ void forward()
                     case 2:
                     timers::d_capture = millis();
                         dribler_power(1500);
-                        if((millis() - timers::ball_capture) < 500) forward::speed = 0;
+                        if((millis() - timers::ball_capture) < 2000) forward::speed = 0;
                         else move_to_point(x_point, y_point);
                         angle = 0;
                         if (abs(x_point - robot::x) < 15 &&  abs(y_point - robot::y) < 15) 
@@ -252,10 +257,9 @@ void forward()
                         break;
                     case 3:
                         timers::ball_capture = millis();
-                        if (millis() - timers::d_capture < 1000) forward::speed = 0;
-                        
+                        if (millis() - timers::d_capture < 500) forward::speed = 0;
                         else {
-                        dribler_power(1500);
+                        dribler_power(1400);
                         turn(255);
                         delay(250);
                         state2 = 1;
