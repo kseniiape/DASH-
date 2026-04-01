@@ -44,9 +44,9 @@ double _data;
 
 void ball_capture()
 {
-    forward::angle = ball::angle + exponential_detour(ball::angle, ball::distance, 0.7, 0.15, 0.3, 1.4);//0.022, 0.142, 23, 60
-    //forward::speed = 200;
-    if(ball::distance > 7 && abs(ball::angle) > 20) forward::speed = 130;
+    forward::angle = ball::angle + exponential_detour(ball::angle, ball::distance, 0.6, 0.14, 0.25, 1.4);//0.022, 0.142, 23, 60
+    forward::speed = 210;
+    if(ball::distance > 7 && abs(ball::angle) > 25) forward::speed = 170;
     //move_angle_speed(forward::angle, forward::speed, 0);
     //Serial.println(forward::angle);
 }
@@ -83,7 +83,7 @@ void control_outs_forward(double angle, int speed)
         //     if(absolute_angle > -20 || absolute_angle < -160)speed = constrain(speed, -speed_constrain, speed_constrain);
         // }
     }
-    else if (robot::x < forward::outs::right_near_point::x + forward::outs::dist_slowdown ) speed = constrain(speed, -speed_constrain, speed_constrain);
+    if (robot::x < forward::outs::right_near_point::x + forward::outs::dist_slowdown ) speed = constrain(speed, -speed_constrain, speed_constrain);
     else if (robot::x > forward::outs::left_far_point::x)
     {
         //Serial.println('/');
@@ -102,7 +102,7 @@ void control_outs_forward(double angle, int speed)
         }*/
        angle = lead_to_degree_borders(90 - robot::local_angle);
     }
-    else if (robot::x > forward::outs::left_far_point::x - forward::outs::dist_slowdown ) speed = constrain(speed, -speed_constrain, speed_constrain);
+    if (robot::x > forward::outs::left_far_point::x - forward::outs::dist_slowdown ) speed = constrain(speed, -speed_constrain, speed_constrain);
 
 
     if(robot::y < forward::outs::right_near_point::y)
@@ -122,7 +122,7 @@ void control_outs_forward(double angle, int speed)
         }*/
 
     }
-    else if(robot::y < forward::outs::right_near_point::y + forward::outs::dist_slowdown) speed = constrain(speed, -speed_constrain, speed_constrain);
+    if(robot::y < forward::outs::right_near_point::y + forward::outs::dist_slowdown) speed = constrain(speed, -speed_constrain, speed_constrain);
 
     else if(robot::y > forward::outs::left_far_point::y)
     {
@@ -141,7 +141,7 @@ void control_outs_forward(double angle, int speed)
         }*/
 
     }
-    else if(robot::y > forward::outs::left_far_point::y - forward::outs::dist_slowdown ) speed = constrain(speed, -speed_constrain, speed_constrain);
+    if(robot::y > forward::outs::left_far_point::y - forward::outs::dist_slowdown ) speed = constrain(speed, -speed_constrain, speed_constrain);
     forward::angle = angle;
     forward::speed = speed;
 /*Serial.print(forward::angle);
@@ -197,8 +197,12 @@ void forward()
                 Serial.println('/');*/
                 dribler_power(1000);
                 if (goal::enemy::if_notice) angle = goal::enemy::local_angle + robot::local_angle;
-                timers::ball_capture = millis();
-                if(abs(ball::angle) >= 130 && abs(lead_to_degree_borders(robot::local_angle)) <  60) state_ball = 2;
+                if(abs(ball::angle) >= 130 && abs(lead_to_degree_borders(robot::local_angle)) <  70) {
+                //if(abs(lead_to_degree_borders(ball::angle - goal::enemy::local_angle)) >= 130) {
+                    if (millis() - timers::state_forward1 >100)  state_ball = 2;
+                }
+                else timers::state_forward1 = millis();
+
                 switch (state1)
                 {
                     case 1:
@@ -218,22 +222,28 @@ void forward()
                         break;
                 }
                 if (goal::enemy::if_notice) angle = goal::enemy::local_angle + robot::local_angle;
+                timers::ball_capture = millis();
+                timers::d_capture = millis();
                 break;
             case 2:
-                forward::speed = 150;
+                //forward::speed = 140;
                /*Serial.print(state2);
                 Serial.println('-');*/
-                if(abs(ball::angle) <= 110 || abs(lead_to_degree_borders(robot::local_angle)) >  80) state_ball = 1;
+                if(abs(ball::angle) <= 110 || abs(lead_to_degree_borders(robot::local_angle)) >  80) { 
+                //if(abs(lead_to_degree_borders(ball::angle - goal::enemy::local_angle)) < 100){
+                    if (millis() - timers::state_forward2 >100)  state_ball = 1;
+                }
+                else timers::state_forward2 = millis();
                 switch (state2)
                 {
                     case 1:
-                    timers::d_capture = millis();
-                        if (abs(ball::angle) > 120) 
+                    forward::speed = 200;
+                        if (abs(ball::angle) > 140) 
                         {
-                            if (ball::distance >= 7) 
+                            if (ball::distance >= 6) 
                             {
-                                dribler_power(1400);
-                                forward::speed = 120;
+                                dribler_power(1300);
+                                forward::speed = 110;
                             }
                             else dribler_power(1200);
                         }
@@ -242,31 +252,52 @@ void forward()
                         angle = lead_to_degree_borders(ball::angle + robot::local_angle + 180);
                         if (if_ball_in_leadle2) state2 = 2;
                         timers::ball_capture = millis();
+                        timers::d_capture = millis();
                         break;
                     case 2:
-                    timers::d_capture = millis();
-                        dribler_power(1500);
-                        if((millis() - timers::ball_capture) < 2000) forward::speed = 0;
-                        else move_to_point(x_point, y_point);
+                        dribler_power(1400);
+                        if(millis() - timers::ball_capture < 1000) 
+                        {
+                            forward::speed = 0;
+                            //dribler_power(1400);
+                        }
+                        //else move_to_point(x_point, y_point);
+                        else 
+                        {
+                            forward::angle = 0;
+                                forward::speed = 180;
+                                
                         angle = 0;
-                        if (abs(x_point - robot::x) < 15 &&  abs(y_point - robot::y) < 15) 
+                                
+                            if (goal::enemy::if_notice && robot::y > 130) 
+                            {
+                                state2 = 3;
+                            }
+                            if (!if_ball_in_leadle2) state2 = 1;
+                        }
+                        /*if (abs(x_point - robot::x) < 15 &&  abs(y_point - robot::y) < 15) 
                         {
                             state2 = 3;
-                        } 
-                        else if (!if_ball_in_leadle2) state2 = 1;
+                        }*/ 
+                        timers::d_capture = millis();
                         break;
                     case 3:
-                        timers::ball_capture = millis();
-                        if (millis() - timers::d_capture < 500) forward::speed = 0;
+                        if (millis() - timers::d_capture < 0) forward::speed = 0;
                         else {
-                        dribler_power(1400);
-                        turn(255);
-                        delay(250);
-                        state2 = 1;
-                        dribler_power(1000);
-                        timers::d_capture = millis();
+                            dribler_power(1400);
+                            if_ball_in_leadle2 = 0;
+                    
+                            if (robot::x <= 0) move_angle_speed(0, 100, 45);
+                            else move_angle_speed(0, 100, -45);
+                            delay(250);
+                            state2 = 1;
+                            dribler_power(1000);
+                            timers::d_capture = millis();
+                            timers::ball_capture  = millis();
                         }
                         angle = 0;
+                        
+                        timers::ball_capture  = millis();
                         
                         break;
                 }
