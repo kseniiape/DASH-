@@ -59,89 +59,79 @@ void d_ball_capture() {
 
 void control_outs_forward(double angle, int speed)
 {
-    /*if (robot::y > 170) 
-    {
-        forward::outs::left_far_point::x =   forward::outs::left_far_point::x - 5;
-        forward::outs::right_near_point::x = forward::outs::right_near_point::x+  5;
-    }*/
     angle = lead_to_degree_borders(angle);
-    double absolute_angle = lead_to_degree_borders(angle + robot::local_angle);
-    if(robot::x < forward::outs::right_near_point::x)
+    if ((robot::x < forward::outs::right_near_point::x) or (robot::x > forward::outs::left_far_point::x))
     {
-        //Serial.println('*');
-        angle = lead_to_degree_borders(-90 - robot::local_angle);
-        // if(robot::x < forward::outs::right_near_point::x)
-        // {
-        //     //Serial.println('**');
-        //     //if(absolute_angle > 90 || absolute_angle <= -160) angle = lead_to_degree_borders(-160-robot::local_angle);
-        //     //else if (absolute_angle > -20 && absolute_angle <= 90) angle = lead_to_degree_borders(-20-robot::local_angle);
-
-        //     speed = constrain(speed, -speed_constrain, speed_constrain);
-        // }
-        // else
-        // {
-        //     if(absolute_angle > -20 || absolute_angle < -160)speed = constrain(speed, -speed_constrain, speed_constrain);
-        // }
-    }
-    if (robot::x < forward::outs::right_near_point::x + forward::outs::dist_slowdown ) speed = constrain(speed, -speed_constrain, speed_constrain);
-    else if (robot::x > forward::outs::left_far_point::x)
-    {
-        //Serial.println('/');
-        //if(robot::x > forward::outs::left_far_point::x)
-        //{
-            /*Serial.print(absolute_angle);
-            Serial.print(' ');
-            Serial.println(robot::local_angle);*/
-            /*if(absolute_angle <= -90 || absolute_angle >= 160) angle = lead_to_degree_borders(160-robot::local_angle);
-            else if (absolute_angle <= 20 && absolute_angle > -90) angle = lead_to_degree_borders(20-robot::local_angle);
-            speed = constrain(speed, -speed_constrain, speed_constrain);
+        if (robot::x > forward::outs::left_far_point::x)
+        {
+            if ((lead_to_degree_borders(angle + robot::local_angle)) < 20 or (lead_to_degree_borders(angle + robot::local_angle)) > 160)
+            {
+                if ((lead_to_degree_borders(angle + robot::local_angle)) < -90 or (lead_to_degree_borders(angle + robot::local_angle)) > 160)
+                angle = 160 - robot::local_angle;
+                else
+                angle = 20 - robot::local_angle;
+            }
         }
         else
-        {
-            if(absolute_angle < 20 || absolute_angle > 160)speed = constrain(speed, -speed_constrain, speed_constrain);
-        }*/
-       angle = lead_to_degree_borders(90 - robot::local_angle);
-    }
-    if (robot::x > forward::outs::left_far_point::x - forward::outs::dist_slowdown ) speed = constrain(speed, -speed_constrain, speed_constrain);
-
-
-    if(robot::y < forward::outs::right_near_point::y)
-    {
-        angle = lead_to_degree_borders(0- robot::local_angle);
-        /*//Serial.println('+');
-        if(robot::y < forward::outs::right_near_point::y)
-        {
-            //Serial.println('+*');
-            if(absolute_angle >= 70) angle = lead_to_degree_borders(70-robot::local_angle);
-            else if (absolute_angle <= -70) angle = lead_to_degree_borders(-70-robot::local_angle);
-            speed = constrain(speed, -speed_constrain, speed_constrain);
+            {
+            if ((lead_to_degree_borders(angle + robot::local_angle)) > -20 or (lead_to_degree_borders(angle + robot::local_angle)) < -160)
+            {
+                if ((lead_to_degree_borders(angle + robot::local_angle)) > 90 or (lead_to_degree_borders(angle + robot::local_angle)) < -160)
+                angle = -160 - robot::local_angle;
+                else
+                angle = -20 - robot::local_angle;
+            }
         }
-        else
-        {
-            if(absolute_angle > 70 || absolute_angle < -70)speed = constrain(speed, -speed_constrain, speed_constrain);
-        }*/
+  }
 
-    }
-    if(robot::y < forward::outs::right_near_point::y + forward::outs::dist_slowdown) speed = constrain(speed, -speed_constrain, speed_constrain);
+  if ((robot::x >  forward::outs::left_far_point::x - forward::outs::dist_slowdown))
+  {
+    if ((lead_to_degree_borders(angle + robot::local_angle)) < 20 or (lead_to_degree_borders(angle + robot::local_angle)) > 160)
+      forward::speed = constrain(speed, -speed_constrain, speed_constrain);
+  }
 
-    else if(robot::y > forward::outs::left_far_point::y)
+  if ((robot::x < forward::outs::right_near_point::x + forward::outs::dist_slowdown))
+  {
+    if ((lead_to_degree_borders(angle + robot::local_angle)) > -20 or (lead_to_degree_borders(angle + robot::local_angle)) < -160)
+      forward::speed = constrain(speed, -speed_constrain, speed_constrain);
+  }
+
+  if ((robot::y > forward::outs::left_far_point::y) or (robot::y < forward::outs::right_near_point::y))
+  {
+    if (robot::y > forward::outs::left_far_point::y)
     {
-        angle = lead_to_degree_borders(180 - robot::local_angle);
-        //Serial.println('=');
-        /*if(robot::y > forward::outs::left_far_point::y)
-        {
-            //Serial.println('=*');
-            if(absolute_angle < 110 && absolute_angle >= 0) angle = lead_to_degree_borders(110-robot::local_angle);
-            else if (absolute_angle > -110 && absolute_angle < 0) angle = lead_to_degree_borders(-110-robot::local_angle);
-            speed = constrain(speed, -speed_constrain, speed_constrain);
-        }
+      if (abs(lead_to_degree_borders(angle + robot::local_angle)) < 120)
+      {
+        if ((lead_to_degree_borders(angle + robot::local_angle)) > 0)
+          angle = 120 - robot::local_angle;
         else
-        {
-            if(absolute_angle > 110 || absolute_angle < -110)speed = constrain(speed, -speed_constrain, speed_constrain);
-        }*/
-
+          angle = -120 - robot::local_angle;
+      }
     }
-    if(robot::y > forward::outs::left_far_point::y - forward::outs::dist_slowdown ) speed = constrain(speed, -speed_constrain, speed_constrain);
+
+    else
+    {
+      if (abs(angle + robot::local_angle) > 60)
+      {
+        if ((lead_to_degree_borders(angle + robot::local_angle)) > 0)
+          angle = 60 - robot::local_angle;
+        else
+          angle = -60 - robot::local_angle;
+      }
+    }
+  }
+
+  if ((robot::y > forward::outs::left_far_point::y - forward::outs::dist_slowdown))
+  {
+    if (abs(lead_to_degree_borders(angle + robot::local_angle)) < 120)
+      forward::speed = constrain(speed, -speed_constrain, speed_constrain);
+  }
+
+  if (robot::y < forward::outs::right_near_point::y +forward::outs::dist_slowdown)
+  {
+    if (abs(lead_to_degree_borders(angle + robot::local_angle)) > 60)
+      forward::speed = constrain(speed, -speed_constrain, speed_constrain);
+  }
     forward::angle = angle;
     forward::speed = speed;
 /*Serial.print(forward::angle);

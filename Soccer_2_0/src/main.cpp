@@ -81,6 +81,7 @@ void setup()
 
 void loop()
 {
+  //timers::test = millis();
   robot_update(); 
   coordinates_robot();
   
@@ -113,8 +114,9 @@ void loop()
     //turn(200);
     #else
     //ball_capture();
-    //forward();
-    goalkeeper_s();
+    forward();
+    //Serial.println(millis() - timers::test);
+    //goalkeeper_s();
     //move_angle_speed(0, 0, ball::angle+robot::local_angle);
     //line_goal_ball();
     //move_to_point(0, 150);

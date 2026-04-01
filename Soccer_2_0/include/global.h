@@ -72,14 +72,14 @@ struct forward
 
     struct right_near_point
     {
-      static inline int x = -53;
+      static inline int x = -40;
       static inline int y = 70;
     };
 
     struct left_far_point
     {
-      static inline int x = 53;
-      static inline int y = 170;
+      static inline int x = 40;
+      static inline int y = 150;
     };
   };
 

@@ -165,70 +165,59 @@ void line_goal_ball()
 
 void control_outs_goalkeeper(double angle, int speed)
 {
-    /*if (robot::y > 170) 
-    {
-        forward::outs::left_far_point::x =   forward::outs::left_far_point::x - 5;
-        forward::outs::right_near_point::x = forward::outs::right_near_point::x+  5;
-    }*/
     angle = lead_to_degree_borders(angle);
-    double absolute_angle = lead_to_degree_borders(angle + robot::local_angle);
-    if(robot::x < goalkeeper::outs::right_point::x)
+    if (robot::y <  goalkeeper::outs::left_point::y)
     {
-        //Serial.println('*');
-        angle = lead_to_degree_borders(-90 - robot::local_angle);
-        // if(robot::x < forward::outs::right_near_point::x)
-        // {
-        //     //Serial.println('**');
-        //     //if(absolute_angle > 90 || absolute_angle <= -160) angle = lead_to_degree_borders(-160-robot::local_angle);
-        //     //else if (absolute_angle > -20 && absolute_angle <= 90) angle = lead_to_degree_borders(-20-robot::local_angle);
-
-        //     speed = constrain(speed, -speed_constrain, speed_constrain);
-        // }
-        // else
-        // {
-        //     if(absolute_angle > -20 || absolute_angle < -160)speed = constrain(speed, -speed_constrain, speed_constrain);
-        // }
-    }
-    if (robot::x < goalkeeper::outs::right_point::x + goalkeeper::outs::dist_slowdown) speed = constrain(speed, -speed_constrain, speed_constrain);
-    else if (robot::x > goalkeeper::outs::left_point::x)
-    {
-        //Serial.println('/');
-        //if(robot::x > forward::outs::left_far_point::x)
-        //{
-            /*Serial.print(absolute_angle);
-            Serial.print(' ');
-            Serial.println(robot::local_angle);*/
-            /*if(absolute_angle <= -90 || absolute_angle >= 160) angle = lead_to_degree_borders(160-robot::local_angle);
-            else if (absolute_angle <= 20 && absolute_angle > -90) angle = lead_to_degree_borders(20-robot::local_angle);
-            speed = constrain(speed, -speed_constrain, speed_constrain);
-        }
+        if (abs(lead_to_degree_borders(angle + robot::local_angle)) > 60)
+        {
+        if ((lead_to_degree_borders(angle + robot::local_angle)) > 0)
+            angle = 60 - robot::local_angle;
         else
-        {
-            if(absolute_angle < 20 || absolute_angle > 160)speed = constrain(speed, -speed_constrain, speed_constrain);
-        }*/
-       angle = lead_to_degree_borders(90 - robot::local_angle);
-    }
-    if (robot::x > goalkeeper::outs::left_point::x - goalkeeper::outs::dist_slowdown) speed = constrain(speed, -speed_constrain, speed_constrain);
-
-
-    if(robot::y < goalkeeper::outs::right_point::y)
-    {
-        angle = lead_to_degree_borders(0- robot::local_angle);
-        /*//Serial.println('+');
-        if(robot::y < forward::outs::right_near_point::y)
-        {
-            //Serial.println('+*');
-            if(absolute_angle >= 70) angle = lead_to_degree_borders(70-robot::local_angle);
-            else if (absolute_angle <= -70) angle = lead_to_degree_borders(-70-robot::local_angle);
-            speed = constrain(speed, -speed_constrain, speed_constrain);
+            angle = -60 - robot::local_angle;
         }
-        else
-        {
-            if(absolute_angle > 70 || absolute_angle < -70)speed = constrain(speed, -speed_constrain, speed_constrain);
-        }*/
-
     }
-    if(robot::y < goalkeeper::outs::right_point::y + goalkeeper::outs::dist_slowdown) speed = constrain(speed, -speed_constrain, speed_constrain);
+
+  if (robot::y < goalkeeper::outs::left_point::y + goalkeeper::outs::dist_slowdown)
+  {
+    if (abs(lead_to_degree_borders(angle + robot::local_angle)) > 60)
+      goalkeeper::speed = constrain(speed, -100, 100);
+  }
+
+  if ((robot::x >  goalkeeper::outs::left_point::x) or (robot::x <  goalkeeper::outs::right_point::x))
+  {
+    if (robot::x > goalkeeper::outs::left_point::x)
+    {
+      if ((lead_to_degree_borders(angle + robot::local_angle) < 20) or (lead_to_degree_borders(angle + robot::local_angle) > 160))
+      {
+        if ((lead_to_degree_borders(angle + robot::local_angle) < -90) or (lead_to_degree_borders(angle + robot::local_angle) > 160))
+          angle = 160 - robot::local_angle;
+        else
+          angle = 20 - robot::local_angle;
+      }
+    }
+    else
+    {
+      if ((lead_to_degree_borders(angle + robot::local_angle) > -20) or (lead_to_degree_borders(angle + robot::local_angle) < -160))
+      {
+        if ((lead_to_degree_borders(angle + robot::local_angle) > 90) or (lead_to_degree_borders(angle + robot::local_angle) < -160))
+          angle = -160 - robot::local_angle;
+        else
+          angle = -20 - robot::local_angle;
+      }
+    }
+  }
+
+  if ((robot::x > goalkeeper::outs::left_point::x - goalkeeper::outs::dist_slowdown))
+  {
+    if ((lead_to_degree_borders(angle + robot::local_angle)) < 20 or (lead_to_degree_borders(angle + robot::local_angle)) > 160)
+      goalkeeper::speed = constrain(speed, -100, 100);
+  }
+
+  if ((robot::x < goalkeeper::outs::right_point::x + goalkeeper::outs::dist_slowdown))
+  {
+    if ((lead_to_degree_borders(angle + robot::local_angle)) > -20 or (lead_to_degree_borders(angle + robot::local_angle)) < -160)
+      goalkeeper::speed = constrain(speed, -100, 100);
+  }
 /*Serial.print(forward::angle);
 Serial.print(' ');
 Serial.println(forward::speed);*/
