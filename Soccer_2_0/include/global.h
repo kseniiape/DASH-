@@ -3,7 +3,7 @@
 
 const float k_coordinates = 0.8;
 const int speed_constrain = 120;
-const float kP_turn_angle = 2.5;
+const float kP_turn_angle = 2.3;
 const float kD_turn_angle = 0;
 const float kI_turn_angle = 0.005;
 bool if_ball_in_leadle2 = 0;
@@ -44,7 +44,11 @@ struct ball
 {
   static inline double prev_angle = 0;
   static inline float distance = 0;
+    static inline float distance_tssop = 0;
+  static inline float distance_camera = 0;
     static inline double angle = 0;
+    static inline double angle_tssop = 0;
+    static inline double angle_camera = 0;
     static inline float prev_distance = 0;
     #if ROLE == 1
     static inline double null_angle = 8;

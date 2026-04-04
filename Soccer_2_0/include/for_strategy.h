@@ -14,13 +14,42 @@
 
 void robot_update();
 
+void ball_distance_angle() {
+  if (ball::angle_tssop == 0 && ball::distance_tssop < 1) {
+    ball::angle = ball::angle_camera; 
+    ball::distance = ball::distance_camera;
+  }
+  else {
+    if (ball::angle_camera == 0 && ball::distance_camera ==0) {
+      ball::angle = ball::angle_tssop; 
+      ball::distance = ball::distance_tssop;
+    }
+    else {
+      ball::angle = (ball::angle_camera+ ball::angle_tssop)/2;
+      ball::distance = (ball::distance_camera+ ball::distance_tssop)/2;
+    }
+  }
+  #if ROLE == 1
+  if (ball::angle == 0 && ball::distance <= 1) 
+    {
+      ball::angle = ball::prev_angle;
+      ball::distance = ball::prev_distance;
+    }
+  else
+    {
+      ball::prev_angle = ball::angle;
+      ball::prev_distance = ball::distance;
+  }
+  #endif
+} 
+
 void kick()
 {
   if ((millis() - timers::kick) > 1000)
   {
     digitalWrite(KICK_PIN1, 0);
     digitalWrite(KICK_PIN1, 1);
-    delay(4);
+    delay(15);
     digitalWrite(KICK_PIN1, 0);
     timers::kick = millis();
   }
@@ -81,7 +110,7 @@ void if_sen_leadle1()
   uint16_t opto_sens = analogRead(SEN_LEADLE1);
   //Serial.println(opto_sens);
   //delay(100);
-   if ((opto_sens > 350 || opto_sens < 30) && abs(ball::angle)  < 40)
+   if ((opto_sens > 380 || opto_sens < 20) && abs(ball::angle)  < 40)
   {
     if_ball_in_leadle1 = true;
     timers::leadle1 = millis();

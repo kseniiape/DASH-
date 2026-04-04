@@ -22,20 +22,20 @@ uint8_t crc8(uint8_t* data, int len)
 
 void camera_data() {
     
-  if (Serial2.available() >= 6)
+  if (Serial2.available() >= 8)
   {
     byte prev_sense = Serial2.read();
     if (prev_sense == 255)
     {
-      byte data_camera[5];
+      byte data_camera[7];
 
-      for (int i = 0; i < 5; i++)
+      for (int i = 0; i < 7; i++)
       {
         data_camera[i] = Serial2.read();
 
       }
-      byte crc = crc8(data_camera, 4);
-      if (crc == data_camera[4])
+      byte crc = crc8(data_camera, 6);
+      if (crc == data_camera[6])
       {
         if(goal::our_color == 'Y')
         {
@@ -43,6 +43,8 @@ void camera_data() {
           goal::our::distance = data_camera[1] * 2;
           goal::enemy::local_angle = lead_to_degree_borders(data_camera[2] * 3);
           goal::enemy::distance = data_camera[3] * 2;
+          ball::angle_camera = lead_to_degree_borders(data_camera[4] * 3);
+          ball::distance_camera = data_camera[4] * 2;
 
           digitalWrite(LED_YELLOW, 1);
           digitalWrite(LED_BLUE, 0);
@@ -54,6 +56,8 @@ void camera_data() {
           goal::enemy::distance = data_camera[1] * 2;
           goal::our::local_angle = lead_to_degree_borders(data_camera[2] * 3);
           goal::our::distance = data_camera[3] * 2;
+          ball::angle_camera = lead_to_degree_borders(data_camera[4] * 3);
+          ball::distance_camera = data_camera[4] * 2;
           digitalWrite(LED_YELLOW, 0);
           digitalWrite(LED_BLUE, 1);
         }

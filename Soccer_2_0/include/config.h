@@ -40,6 +40,6 @@
 
 #define ec 2.7182
 
-#define ROLE 2//1 - f, 2 - g
+#define ROLE 1//1 - f, 2 - g
 
 Servo esc;

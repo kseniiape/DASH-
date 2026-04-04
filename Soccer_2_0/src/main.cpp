@@ -106,17 +106,23 @@ void loop()
   motor4(200);*/
   if (!stop_motors)
   {
+    //dribler_power(1500);
     //ball_capture();
     #if ROLE == 1
     //move_angle_speed(0, 150, 0);
     //goalkeeper_s();
-    //forward();
+    forward();
+    //move_to_point(30, 100);
+    /*forward::angle = goalkeeper::angle;
+    forward::speed = goalkeeper::speed;
+    int angle = 90;
+    move_angle_speed(forward::angle, forward::speed, angle);*/
     //turn(200);
     #else
     //ball_capture();
-    forward();
+    //forward();
     //Serial.println(millis() - timers::test);
-    //goalkeeper_s();
+    goalkeeper_s();
     //move_angle_speed(0, 0, ball::angle+robot::local_angle);
     //line_goal_ball();
     //move_to_point(0, 150);

@@ -21,6 +21,7 @@ void if_notice_goal();
 void coordinates_robot();
 void if_sen_leadle1();
 void if_sen_leadle2();
+void ball_distance_angle();
 
 void robot_update()
 {
@@ -35,5 +36,7 @@ void robot_update()
   reset_imu();//
   change_goal();//
   if_notice_goal();
+  ball_distance_angle();
+  //Serial.println(ball::distance);
 
 }
