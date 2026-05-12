@@ -28,7 +28,7 @@ void robot_update()
   gyro::angle = gyro_data();//
   
   robot::local_angle= lead_to_degree_borders(gyro::angle - gyro::null_angle);//
-  if_sen_leadle2();
+  //if_sen_leadle2();
   camera_data();
   if_sen_leadle1();//
   detect_ball();//

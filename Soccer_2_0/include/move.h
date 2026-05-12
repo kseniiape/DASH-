@@ -11,23 +11,29 @@
 int turn_angle (int angle) {
 
   float err_angle = lead_to_degree_borders(angle - robot::local_angle) ;
+  
+  #if ROLE == 2
+  //if(if_ball_in_leadle2) u = constrain(u, -40, 40); 
+  int u = err_angle * kP_turn_angle;
+  u =constrain(u, -30, 30); 
+  if (abs(u) < 10) u = 0;
+
+
+  #else
   static float err_old_angle = err_angle, err_i_angle = err_angle;
   int u = err_angle * kP_turn_angle + (err_angle - err_old_angle)*kD_turn_angle + err_i_angle*kI_turn_angle;
-  #if ROLE == 1
-  //if(if_ball_in_leadle2) u = constrain(u, -40, 40); 
-  #else
   /*Serial.print(err_angle);
   Serial.print(' ');
   Serial.println(u);*/
   //if (abs(u) <= 10) u = 0;
-  
-  u =constrain(u, -50, 50); 
-  #endif
-    u =constrain(u, -50, 50); 
-
-  //u = constrain(u, -60, 60); 
+  u =constrain(u, -60, 60);
+  //u =constrain(u, -50, 50); 
   err_old_angle = err_angle;
   err_i_angle += kI_turn_angle*err_angle;
+  #endif
+  
+  //u = constrain(u, -60, 60); 
+  
   
   return u;
 }
@@ -36,8 +42,8 @@ int turn_angle (int angle) {
 
 void turn(int num)
 {
-  motor1(num);
-  motor2(num);
+  motor1(-num);
+  motor2(-num);
   motor3(num);
   motor4(num);
 }
@@ -48,7 +54,7 @@ void move_angle_speed (double angle, int speed_m, double angle_turn)
   double _y1, _y2, _y3, _y4;
   double _L;
   double _alpha;
-  static int _dL = 25;
+  static int _dL = 20;
   static int  _current_movement[2] = {angle, speed_m},  _wanted_movement[2] = {angle, speed_m};
   _wanted_movement[0] = angle; _wanted_movement[1] = speed_m;
   _x1 = sin( _current_movement[0] / 57.3) * _current_movement[1];
@@ -175,8 +181,8 @@ void move_to_point(int x_point, int y_point)
     err_old_x = err_x;
     err_i_x += goalkeeper::k::x::kI*err_x;
  
-  goalkeeper::angle = xy_angle;
-  goalkeeper::speed = xy;
+    goalkeeper::angle = xy_angle - robot::local_angle;
+    goalkeeper::speed = xy;
 
     //move_angle_speed(goalkeeper::angle,  goalkeeper::speed, 0);
 

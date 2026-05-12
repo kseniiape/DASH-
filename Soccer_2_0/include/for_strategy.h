@@ -15,7 +15,12 @@
 void robot_update();
 
 void ball_distance_angle() {
-  if (ball::angle_tssop == 0 && ball::distance_tssop < 1) {
+    ball::angle = ball::angle_camera; 
+    ball::distance = ball::distance_camera;
+    /*Serial.print(ball::angle);
+    Serial.print(' ');
+    Serial.println(ball::distance);*/
+  /*if (ball::angle_tssop == 0 && ball::distance_tssop < 1) {
     ball::angle = ball::angle_camera; 
     ball::distance = ball::distance_camera;
   }
@@ -28,8 +33,18 @@ void ball_distance_angle() {
       ball::angle = (ball::angle_camera+ ball::angle_tssop)/2;
       ball::distance = (ball::distance_camera+ ball::distance_tssop)/2;
     }
-  }
-  #if ROLE == 1
+  }*/
+ /*if (ball::angle == 0 && ball::distance <= 1) 
+    {
+      ball::angle = ball::prev_angle;
+      ball::distance = ball::prev_distance;
+    }
+  else
+    {
+      ball::prev_angle = ball::angle;
+      ball::prev_distance = ball::distance;
+  }*/
+ /* #if ROLE == 1
   if (ball::angle == 0 && ball::distance <= 1) 
     {
       ball::angle = ball::prev_angle;
@@ -40,7 +55,8 @@ void ball_distance_angle() {
       ball::prev_angle = ball::angle;
       ball::prev_distance = ball::distance;
   }
-  #endif
+  #endif*/
+  //Serial.println(ball::angle);
 } 
 
 void kick()
@@ -50,6 +66,18 @@ void kick()
     digitalWrite(KICK_PIN1, 0);
     digitalWrite(KICK_PIN1, 1);
     delay(15);
+    digitalWrite(KICK_PIN1, 0);
+    timers::kick = millis();
+  }
+}
+
+void kick_low()
+{
+  if ((millis() - timers::kick) > 1000)
+  {
+    digitalWrite(KICK_PIN1, 0);
+    digitalWrite(KICK_PIN1, 1);
+    delay(6);
     digitalWrite(KICK_PIN1, 0);
     timers::kick = millis();
   }
@@ -110,14 +138,14 @@ void if_sen_leadle1()
   uint16_t opto_sens = analogRead(SEN_LEADLE1);
   //Serial.println(opto_sens);
   //delay(100);
-   if ((opto_sens > 380 || opto_sens < 20) && abs(ball::angle)  < 40)
+   if ((opto_sens > 400 || opto_sens < 20) && (abs(ball::angle)  < 30)&& ball::distance<150 )
   {
     if_ball_in_leadle1 = true;
     timers::leadle1 = millis();
   }
     else
   {
-    if ((millis() - timers::leadle1) > 50) if_ball_in_leadle1 = false; 
+    if ((millis() - timers::leadle1) > 80) if_ball_in_leadle1 = false; 
   }
 }
 

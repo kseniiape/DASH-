@@ -70,6 +70,7 @@ void setup()
   timers::test = millis();
   timers::state_forward1 = millis();
   timers::state_forward2 = millis();
+  timers::ball_lost = millis();
   if(robot::role == 2) 
   {
     dribler = false;
@@ -81,9 +82,13 @@ void setup()
 
 void loop()
 {
+   //Serial.println(ball::angle);
   //timers::test = millis();
   robot_update(); 
   coordinates_robot();
+  /*Serial.print(robot::x);
+  Serial.print(' ');
+  Serial.println(robot::y);*/
   
   //dribler_power(1550);
 
@@ -109,9 +114,20 @@ void loop()
     //dribler_power(1500);
     //ball_capture();
     #if ROLE == 1
-    //move_angle_speed(0, 150, 0);
-    //goalkeeper_s();
     forward();
+    //turn(255);
+    /*move_to_point(-30, 170);
+    int angle = 180;
+    move_angle_speed(goalkeeper::angle, goalkeeper::speed, angle);*/
+    //move_angle_speed(0, 0, ball::angle+robot::local_angle);
+    /*Serial.print(ball::distance);
+    Serial.print(' ');
+    forward();
+    Serial.println(robot::local_angle);*/
+    //goalkeeper_s();
+    //dribler_power(1400);
+    //goalkeeper_s();
+    //move_angle_speed(0, 0, ball::angle+robot::local_angle);
     //move_to_point(30, 100);
     /*forward::angle = goalkeeper::angle;
     forward::speed = goalkeeper::speed;
@@ -121,9 +137,10 @@ void loop()
     #else
     //ball_capture();
     //forward();
+    
     //Serial.println(millis() - timers::test);
     goalkeeper_s();
-    //move_angle_speed(0, 0, ball::angle+robot::local_angle);
+    //move_angle_speed(0, 150, 0);
     //line_goal_ball();
     //move_to_point(0, 150);
     

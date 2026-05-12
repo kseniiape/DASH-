@@ -9,8 +9,7 @@
 
 double convert_dist(double max_dist, double dist)
 {
-  double _data = (dist - max_dist) / max_dist + 1;
-
+  double _data = (max_dist - dist) / max_dist + 1;
   if (_data > 1)
     _data = 1;
   else if (_data < 0)
@@ -44,7 +43,7 @@ double _data;
 
 void ball_capture()
 {
-    forward::angle = ball::angle + exponential_detour(ball::angle, ball::distance, 0.6, 0.14, 0.25, 1.4);//0.022, 0.142, 23, 60
+    forward::angle = ball::angle + exponential_detour(ball::angle, ball::distance, 0.4, 0.12, 0.23, 1.3);//0.022, 0.142, 23, 60
     forward::speed = 210;
     if(ball::distance > 7 && abs(ball::angle) > 25) forward::speed = 170;
     //move_angle_speed(forward::angle, forward::speed, 0);
@@ -140,27 +139,39 @@ Serial.println(forward::speed);*/
 }
 
 void forward()
-{
+{ 
+  
     double angle = 0;
-
+  if (ball::angle || ball::distance) timers::ball_lost = millis();
     //1 - capture, 2 - move to goal, 3 - kick
     forward::speed = 180;
     //ball_capture();
     
     if (!dribler)
     {
+        
         //1 - capture, 2 - move to goal, 3 - kick
         static int state = 1;
         float k_angle = 0.1, k_distance = 0.3;
         switch (state)
         {
             case 1:
+              if (millis() - timers::ball_lost <= 6000) {
                 ball_capture();
                 if (if_ball_in_leadle1) state = 2;
-                if (abs(ball::angle < 25) && ball::distance < 40) forward::speed = constrain(forward::speed, -150, 150);
+                if (abs(ball::angle) < 25 && ball::distance < 90) forward::speed = constrain(forward::speed, -150, 150);
+                //if (abs(ball::angle) < 7 && ball::distance < 5) state = 3;
                 //forward::speed = 130 +k_angle*abs(ball::angle) + k_distance*ball::distance; 
+              }
+              else {
+                  move_to_point(0, 110);
+                    forward::angle = goalkeeper::angle;
+                    forward::speed = goalkeeper::speed;
+              }
                 break;
             case 2:
+
+                timers::ball_lost = millis();
                 forward::angle = 0;
                 forward::speed = 200;
                 if (goal::enemy::distance < 100) state = 3;
@@ -168,61 +179,133 @@ void forward()
                 if (!if_ball_in_leadle1) state = 1;
                 break;
             case 3:
+                forward::angle = 0;
                 forward::speed = 200;
                 kick();
                 if (!if_ball_in_leadle1) state = 1;
-                else state = 2;
+                //else state = 2;
+                timers::ball_lost = millis();
                 break;
         }
         if (goal::enemy::if_notice) angle = goal::enemy::local_angle + robot::local_angle;
+        else angle = 0;
         //Serial.println(angle);
     }
 
     else
-    {   //1 - capture, 2 - move to point, 3 - kick
+    {   //1 - capture, 2 - move to point, 3 - dribler, 4 - kick
+
         forward::speed = 180;
         static int state = 1;
+        //Serial.println(state );
+        //Serial.println(state);
         switch (state)
         {
-            case 1:
-                forward::angle = 0;
-                angle = lead_to_degree_borders(ball::angle + robot::local_angle);
-                if (abs(ball::angle) < 90) 
-                {
-                    dribler_power(1500);
-                    forward::speed = 140;
-                }
-                else dribler_power(1000);
-                if (if_ball_in_leadle1) state = 2;
-                timers::state_forward1 = millis();
-                timers::state_forward2 = millis();
+            case 1: {
+              if (millis() - timers::ball_lost <= 6000) {
+                  static float k_speed = 1.2;
+                    forward::angle = 0;
+                    angle = lead_to_degree_borders(ball::angle + robot::local_angle);
+                    if (abs(ball::angle) <= 40) {
+                      //Serial.println('+');
+                        dribler_power(1300);
+                        forward::speed =constrain(ball::distance * k_speed, 60, 200);
+                    }
+                    else {
+                      dribler_power(1000);
+                      if (ball::distance < 40) forward::speed = 60;
+                    }
+                    if (ball::distance <= 20) forward::speed = 60;
+                    if (ball::distance >= 60) forward::speed = 180;
 
-                break;
-            
-            case 2:
-                int x_point = -40, y_point = 130;
-                dribler_power(1500);
-                if (millis() - timers::state_forward1 < 500) forward::speed = 0;
-                else {
-                    move_to_point(x_point, y_point);
+
+                    if (if_ball_in_leadle1 && (goal::enemy::distance >= 130 ||abs(robot::local_angle) >= 90)) state = 2;
+                    else if (if_ball_in_leadle1) state = 4;
+                    //timers::state_forward1 = millis();
+                    timers::state_forward1 = millis();
+                    timers::state_forward2 = millis();
+              }
+              else {
+                    move_to_point(0, 110);
                     forward::angle = goalkeeper::angle;
                     forward::speed = goalkeeper::speed;
-                    angle = 180;
-                }
-                if (!if_ball_in_leadle1) state = 1;
-                if (abs(x_point - robot::x) < 15 && abs(y_point - robot::y) < 15) state = 3;
-                timers::state_forward2 = millis();
+              }
                 break;
-            case 3:
-                if (millis() - timers::state_forward2 < 500) forward::speed = 0;
-                else {
-                    kick();
-                    turn(200);
-                    delay(500);
+              }
+            case 2: {
+                angle = 180;
+                static int x_point1 = -25, y_point1 = 140;
+                static int x_point2 = 25, y_point2 = 140;
+                int x_point_near = 0, y_point_near = 0;
+                if (sqrt(pow((x_point1-robot::x), 2) + pow(y_point1-robot::y, 2)) <= sqrt(pow((x_point2-robot::x), 2) + pow(y_point2-robot::y, 2))) {
+                  x_point_near = x_point1;
+                  y_point_near = y_point1;
                 }
+                else {
+                  x_point_near = x_point2;
+                  y_point_near = y_point2;
+                }
+
+                if (millis() - timers::state_forward1 < 300) {
+                  dribler_power(1500);
+                  forward::speed = 0;
+                }
+                else {
+                    dribler_power(1500);
+                    move_to_point(x_point_near, y_point_near);
+                    forward::angle = goalkeeper::angle;
+                    forward::speed = goalkeeper::speed;
+                    
+                }
+                if (abs(x_point_near - robot::x) < 15 && abs(y_point_near - robot::y) < 15) state = 3;
+                if (!if_ball_in_leadle1) state = 1;
+                timers::state_forward2 = millis();
+                timers::ball_lost = millis();
+                break;
+                
+                //if (!if_ball_in_leadle1) state = 1;
+                //forward::speed = 0;
+              }
+            case 3: {
+              dribler_power(1400);
+                angle = 180;
+              //Serial.print('+');
+              //Serial.println(if_ball_in_leadle1);
+                /*if (millis() - timers::state_forward2 < 500) forward::speed = 0;
+                else {*/
+                  dribler_power(1400);
+                    //kick();
+                    turn(255*((abs(robot::x))/robot::x));
+                    delay(190);
+                    kick_low();
+                    dribler_power(1000);
+                    state = 1; 
+                    turn(0);
+                ////}
                 if (!if_ball_in_leadle1) state = 1;
                 timers::state_forward1 = millis();
+                timers::ball_lost = millis();
                 break;
+              }
+
+              case 4: {
+              dribler_power(1200);
+              if (goal::enemy::if_notice) angle = goal::enemy::local_angle + robot::local_angle;
+              else angle = 0;
+              if (goal::enemy::distance <= 100 && (abs(goal::enemy::local_angle) <= 20 || (robot::local_angle ==0 && !goal::enemy::if_notice))) {
+                kick();
+                dribler_power(1000);
+                
+              }
+              forward::speed = 190;
+              forward::angle = 0;
+              //Serial.print('+');
+              //Serial.println(if_ball_in_leadle1);
+                if (!if_ball_in_leadle1) state = 1;
+                timers::state_forward2 = millis();
+                timers::state_forward1 = millis();
+                break;
+              }
         }
         
     }

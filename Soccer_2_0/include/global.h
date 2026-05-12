@@ -3,18 +3,25 @@
 
 const float k_coordinates = 0.8;
 const int speed_constrain = 120;
-const float kP_turn_angle = 2.3;
+
+#if ROLE == 1
+const float kP_turn_angle = 2.2;
 const float kD_turn_angle = 0;
-const float kI_turn_angle = 0.005;
+const float kI_turn_angle = 0.004;
+#else
+const float kP_turn_angle = 1.8;
+const float kD_turn_angle = 0;
+const float kI_turn_angle = 0.001;
+#endif
 bool if_ball_in_leadle2 = 0;
 bool if_ball_in_leadle1 = 0;
 bool stop_motors = true;
 double x_soft= 0, y_soft = 0, k_ball = 0.2;
 
 //Дистанция до мяча при которой (или меньше) начинается объезд по окружности
-const float min_dist_to_ball = 7;
+const float min_dist_to_ball = 130;
 
-bool dribler = 0;
+bool dribler = 1;
 struct tssop
 {
     const static inline int ir_addr[16][4] = {
@@ -76,14 +83,14 @@ struct forward
 
     struct right_near_point
     {
-      static inline int x = -40;
-      static inline int y = 70;
+      static inline int x = -53;
+      static inline int y = 55;
     };
 
     struct left_far_point
     {
-      static inline int x = 40;
-      static inline int y = 150;
+      static inline int x = 53;
+      static inline int y = 180;
     };
   };
 
@@ -137,17 +144,17 @@ struct goal
 struct timers
 {
     static inline int32_t kick, leadle2, leadle1, ball_capture, ball_state, forward_state ,test, d_capture, state_forward1;
-    static inline int32_t state_forward2;
+    static inline int32_t state_forward2, ball_lost;
 };
 
 struct goalkeeper
 {
-  static inline const int R = 45;
+  static inline const int R = 55;
   static inline int constrain_y = 210;
   static inline int constrain_x = 210;
   
-  static inline int constrain_y1 = 100;
-  static inline int constrain_x1 = 100;
+  //static inline int constrain_y1 = 100;
+  //static inline int constrain_x1 = 100;
   static inline double angle = 0;
   static inline int speed = 0;
   struct outs
@@ -156,13 +163,13 @@ struct goalkeeper
 
     struct right_point
     {
-      static inline int x = -45;
+      static inline int x = -42;
       static inline int y = 30;
     };
 
     struct left_point
     {
-      static inline int x = 45;
+      static inline int x = 42;
       static inline int y = goalkeeper::outs::right_point::y;
     };
   };
@@ -170,25 +177,26 @@ struct goalkeeper
   struct line_ball_goal
   {
     static inline int major_semi_axis = 50;
-    static inline int minor_axis = 45;
-    static inline int y_center = goal::our::y;
+    static inline int minor_axis = 48;
+    static inline int y_center = goal::our::y-10;
     static inline int x_center = goal::our::x;
   };
 
   struct k
   {
+    static inline float ball_error_kP = 0.5;
     struct y
     {
       static inline float kP = 2.8;
       static inline float kD = 0;
-      static inline float kI = 0.01;
+      static inline float kI = 0.001;
     };
     
     struct x
     {
-      static inline float kP = 2.5;
+      static inline float kP = 3.5;
       static inline float kD = 0;
-      static inline float kI = 0.005;
+      static inline float kI = 0.007;
     };
 
   };

@@ -40,7 +40,7 @@ void detect_ball()
     ball::angle_tssop = -lead_to_degree_borders(atan2(x, y) * 57.3)-ball::null_angle;
     ball::distance_tssop = sqrt(x * x + y * y);
      #if ROLE == 2 
-    if (ball::angle_tssop == -ball::null_angle && ball::distance_tssop <= 2) {
+    if (ball::angle_tssop == -ball::null_angle && ball::distance <= 2) {
       ball::angle_tssop = 0;
     }
       /*x_soft = k_ball * x + x_soft * (1 - k_ball);
@@ -50,9 +50,6 @@ void detect_ball()
       //ball::angle = -lead_to_degree_borders(atan2(x, y) * 57.3)-ball::null_angle;
     
     #else
-    if (ball::angle_tssop == -ball::null_angle && ball::distance_tssop <= 2) {
-      ball::angle_tssop = 0;
-    }
     //ball::angle = -lead_to_degree_borders(atan2(x, y) * 57.3)-ball::null_angle;
     //ball::distance = sqrt(x * x + y * y);
     /*if (ball::angle == -ball::null_angle && ball::distance <= 1) 
