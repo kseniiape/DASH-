@@ -52,7 +52,7 @@ void reset_imu()
   if (digitalRead(BUT_DOWN) == 0)
   {
     gyro::null_angle = gyro::angle;
-    //Serial.println(gyro::null_angle);
+    //c
   }
   
 }

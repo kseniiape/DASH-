@@ -5,9 +5,9 @@ const float k_coordinates = 0.8;
 const int speed_constrain = 120;
 
 #if ROLE == 1
-const float kP_turn_angle = 2.2;
-const float kD_turn_angle = 0;
-const float kI_turn_angle = 0.004;
+const float kP_turn_angle = 2;
+const float kD_turn_angle = 0.5;
+const float kI_turn_angle = 0.0;
 #else
 const float kP_turn_angle = 1.8;
 const float kD_turn_angle = 0;
@@ -21,7 +21,7 @@ double x_soft= 0, y_soft = 0, k_ball = 0.2;
 //Дистанция до мяча при которой (или меньше) начинается объезд по окружности
 const float min_dist_to_ball = 130;
 
-bool dribler = 1;
+bool dribler = 0;
 struct tssop
 {
     const static inline int ir_addr[16][4] = {
@@ -58,7 +58,7 @@ struct ball
     static inline double angle_camera = 0;
     static inline float prev_distance = 0;
     #if ROLE == 1
-    static inline double null_angle = 8;
+    static inline double null_angle = 0;
     #else
     static inline double null_angle = 8;
     #endif
@@ -83,14 +83,14 @@ struct forward
 
     struct right_near_point
     {
-      static inline int x = -53;
-      static inline int y = 55;
+      static inline int x = -40;
+      static inline int y = 65;
     };
 
     struct left_far_point
     {
-      static inline int x = 53;
-      static inline int y = 180;
+      static inline int x = 40;
+      static inline int y = 170;
     };
   };
 
@@ -149,7 +149,7 @@ struct timers
 
 struct goalkeeper
 {
-  static inline const int R = 55;
+  static inline const int R = 41;
   static inline int constrain_y = 210;
   static inline int constrain_x = 210;
   
@@ -163,13 +163,13 @@ struct goalkeeper
 
     struct right_point
     {
-      static inline int x = -42;
-      static inline int y = 30;
+      static inline int x = -40;
+      static inline int y = 40;
     };
 
     struct left_point
     {
-      static inline int x = 42;
+      static inline int x = 40;
       static inline int y = goalkeeper::outs::right_point::y;
     };
   };
@@ -194,9 +194,9 @@ struct goalkeeper
     
     struct x
     {
-      static inline float kP = 3.5;
+      static inline float kP = 3.2;
       static inline float kD = 0;
-      static inline float kI = 0.007;
+      static inline float kI = 0.005;
     };
 
   };

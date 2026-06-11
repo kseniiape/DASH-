@@ -21,15 +21,20 @@ int turn_angle (int angle) {
 
   #else
   static float err_old_angle = err_angle, err_i_angle = err_angle;
-  int u = err_angle * kP_turn_angle + (err_angle - err_old_angle)*kD_turn_angle + err_i_angle*kI_turn_angle;
+  float u = err_angle * kP_turn_angle + (err_angle - err_old_angle)*kD_turn_angle + err_i_angle*kI_turn_angle;
   /*Serial.print(err_angle);
   Serial.print(' ');
   Serial.println(u);*/
-  //if (abs(u) <= 10) u = 0;
-  u =constrain(u, -60, 60);
+  
+  
+  //u =constrain(u, -70, 70);
   //u =constrain(u, -50, 50); 
   err_old_angle = err_angle;
   err_i_angle += kI_turn_angle*err_angle;
+ // if (ball::angle == 0) {
+   // u = 0;
+   // err_i_angle = 0;
+  //}
   #endif
   
   //u = constrain(u, -60, 60); 
@@ -89,7 +94,7 @@ void move_angle_speed (double angle, int speed_m, double angle_turn)
     double angle3 = _current_movement[0] - 135;
     double angle2 = _current_movement[0] - 45;
     double angle4 = _current_movement[0] + 135;
-    int a = turn_angle(angle_turn);
+    float a = turn_angle(angle_turn);
     //int a = 0;
 
     int speed1 = _current_movement[1] * cos(angle1 / 57.3) - a;
@@ -129,7 +134,7 @@ void move_angle_speed (double angle, int speed_m, double angle_turn)
     int a = turn_angle(angle_turn);
     int speed1 = -_current_movement[1] * cos(angle1 / 57.3) + a;
     int speed3 = -_current_movement[1] * cos(angle3 / 57.3) + a;
-    int speed2 = _current_movement[1] * cos(angle2 / 57.3) + a;
+    int speed2 = - _current_movement[1] * cos(angle2 / 57.3) - a;
     int speed4 = _current_movement[1] * cos(angle4 / 57.3) + a;
     
     motor1(speed1);

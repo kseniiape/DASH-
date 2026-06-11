@@ -15,25 +15,23 @@
 void robot_update();
 
 void ball_distance_angle() {
-    ball::angle = ball::angle_camera; 
+    ball::angle = ball::angle_camera - 7; 
     ball::distance = ball::distance_camera;
-    /*Serial.print(ball::angle);
-    Serial.print(' ');
-    Serial.println(ball::distance);*/
-  /*if (ball::angle_tssop == 0 && ball::distance_tssop < 1) {
+    
+  if (ball::angle_tssop == 0 && ball::distance_tssop < 1) {
     ball::angle = ball::angle_camera; 
     ball::distance = ball::distance_camera;
   }
   else {
     if (ball::angle_camera == 0 && ball::distance_camera ==0) {
       ball::angle = ball::angle_tssop; 
-      ball::distance = ball::distance_tssop;
+      ball::distance = ball::distance_camera;
     }
     else {
       ball::angle = (ball::angle_camera+ ball::angle_tssop)/2;
-      ball::distance = (ball::distance_camera+ ball::distance_tssop)/2;
+      ball::distance = ball::distance_camera;
     }
-  }*/
+  }
  /*if (ball::angle == 0 && ball::distance <= 1) 
     {
       ball::angle = ball::prev_angle;
@@ -57,6 +55,9 @@ void ball_distance_angle() {
   }
   #endif*/
   //Serial.println(ball::angle);
+  //SSerial.print(ball::angle);
+   //S Serial.print(' ');
+   //S Serial.println(ball::distance);
 } 
 
 void kick()
@@ -138,14 +139,14 @@ void if_sen_leadle1()
   uint16_t opto_sens = analogRead(SEN_LEADLE1);
   //Serial.println(opto_sens);
   //delay(100);
-   if ((opto_sens > 400 || opto_sens < 20) && (abs(ball::angle)  < 30)&& ball::distance<150 )
+   if ((opto_sens > 400 || opto_sens < 30) && (abs(ball::angle)  < 50))
   {
     if_ball_in_leadle1 = true;
     timers::leadle1 = millis();
   }
     else
   {
-    if ((millis() - timers::leadle1) > 80) if_ball_in_leadle1 = false; 
+    if ((millis() - timers::leadle1) > 10) if_ball_in_leadle1 = false; 
   }
 }
 

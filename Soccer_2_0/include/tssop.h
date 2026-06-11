@@ -39,8 +39,8 @@ void detect_ball()
 
     ball::angle_tssop = -lead_to_degree_borders(atan2(x, y) * 57.3)-ball::null_angle;
     ball::distance_tssop = sqrt(x * x + y * y);
-     #if ROLE == 2 
-    if (ball::angle_tssop == -ball::null_angle && ball::distance <= 2) {
+     ////#if ROLE == 2 
+    if (ball::angle_tssop == -ball::null_angle && ball::distance_tssop <= 2) {
       ball::angle_tssop = 0;
     }
       /*x_soft = k_ball * x + x_soft * (1 - k_ball);
@@ -49,7 +49,7 @@ void detect_ball()
       ball::distance = sqrt(x_soft * x_soft + y_soft * y_soft);*/
       //ball::angle = -lead_to_degree_borders(atan2(x, y) * 57.3)-ball::null_angle;
     
-    #else
+    //#else
     //ball::angle = -lead_to_degree_borders(atan2(x, y) * 57.3)-ball::null_angle;
     //ball::distance = sqrt(x * x + y * y);
     /*if (ball::angle == -ball::null_angle && ball::distance <= 1) 
@@ -63,14 +63,14 @@ void detect_ball()
       ball::prev_distance = ball::distance;
 
     }*/
-    #endif
-    /*Serial.println(ball::angle);
-  for(int i = 0; i<32; i++ ) 
-  {
-    Serial.print(data[i]);
-    Serial.print(' ');
-  }
-  Serial.println(' ');*/
+    //#endif
+    /*Serial.println(ball::angle_tssop);  
+    for(int i = 0; i<32; i++ ) 
+    {
+      Serial.print(data[i]);
+      Serial.print(' ');
+    }
+    Serial.println(' ');*/
 
 
 }

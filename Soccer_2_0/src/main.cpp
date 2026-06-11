@@ -82,6 +82,7 @@ void setup()
 
 void loop()
 {
+  //SSerial.println(gyro::angle);
    //Serial.println(ball::angle);
   //timers::test = millis();
   robot_update(); 
@@ -119,7 +120,7 @@ void loop()
     /*move_to_point(-30, 170);
     int angle = 180;
     move_angle_speed(goalkeeper::angle, goalkeeper::speed, angle);*/
-    //move_angle_speed(0, 0, ball::angle+robot::local_angle);
+    //move_angle_speed(0, 0, 0);
     /*Serial.print(ball::distance);
     Serial.print(' ');
     forward();
