@@ -130,11 +130,11 @@ void loop()
     //dribler_power(1500);
     //ball_capture();
     #if ROLE == 1
-    move_angle_speed(0, 0, 0);
+    //move_angle_speed(0, 0, 0);
 
     //line_goal_ball();
     //goalkeeper_s();
-    //forward();
+    forward();
     //turn(255);
     /*move_to_point(-30, 170);
     int angle = 180;

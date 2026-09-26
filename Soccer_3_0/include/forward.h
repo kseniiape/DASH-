@@ -141,7 +141,7 @@ Serial.println(forward::speed);*/
 void forward()
 { 
   
-    double angle = 0;
+  double angle = 0;
   if (ball::angle || ball::distance) timers::ball_lost = millis();
     //1 - capture, 2 - move to goal, 3 - kick
     forward::speed = 180;

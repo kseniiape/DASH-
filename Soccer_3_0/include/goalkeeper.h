@@ -257,10 +257,10 @@ void goalkeeper_s()
    static double ball_angle_pre = ball::angle;
     static int ball_distance_pre = ball::distance;
     double a = lead_to_degree_borders(ball::angle + robot::local_angle);
-   if (millis() - timers::ball_state >= 6000) 
+   if (millis() - timers::ball_state >= 9000) 
     {
         timers::forward_state = millis();
-        while (millis() - timers::forward_state <= 10000)
+        while (millis() - timers::forward_state <= 8000)
         {
             robot_update(); 
             coordinates_robot();
@@ -283,7 +283,7 @@ void goalkeeper_s()
         {
             case 1:{
             
-                if (abs(ball_angle_pre - ball::angle) < 15 && abs(ball_distance_pre - ball::distance) < 50 && (ball::angle || ball::distance));
+                if (abs(ball_angle_pre - ball::angle) < 10 && abs(ball_distance_pre - ball::distance) < 20 && (ball::angle || ball::distance) && (ball::angle + robot::local_angle >70));
                 else 
                 {
                     timers::ball_state = millis();
@@ -337,16 +337,16 @@ void goalkeeper_s()
                 if (abs(lead_to_degree_borders(ball::angle + robot::local_angle)) >  110) 
                 {
                     //Serial.println(ball::distance);
-                    //a = 0;
+                    a = 0;
                     //a = lead_to_degree_borders(goal::our::local_angle + robot::local_angle + 180);
-                    if (ball::distance <= 80) //&& (abs(lead_to_degree_borders(ball::angle)) >= 80 || abs(lead_to_degree_borders(ball::angle - goal::our::local_angle)) < 30)) 
+                    if (ball::distance <= 60) //&& (abs(lead_to_degree_borders(ball::angle)) >= 80 || abs(lead_to_degree_borders(ball::angle - goal::our::local_angle)) < 30)) 
                     {
                         goalkeeper::speed = 0;
                     }
                 }
                 if(abs(ball::angle) <= 5 && ball::distance == 0) 
                 {
-                    move_to_point(0, goalkeeper::R);
+                    move_to_point(0, goalkeeper::R - goalkeeper::y_center);
                     a = 0;
                 }
                 /*Serial.print(robot::x);
@@ -395,7 +395,7 @@ void goalkeeper_s()
                Serial.print(' ');
                Serial.print(goalkeeper::angle);
                Serial.println(' ');*/
-        //a = constrain(a, -60, 60);
+        a = constrain(a, -60, 60);
         move_angle_speed(goalkeeper::angle, goalkeeper::speed, a);
     }
 //Serial.println(a);
