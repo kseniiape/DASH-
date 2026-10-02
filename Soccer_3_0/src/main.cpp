@@ -89,8 +89,9 @@ void setup()
   {
     dribler = false;
   }
+    else {
   dribler_config();
-
+  }
 
 }
 
@@ -136,10 +137,11 @@ void loop()
     //goalkeeper_s();
     forward();
     //turn(255);
+    //turn(255);
     /*move_to_point(-30, 170);
     int angle = 180;
     move_angle_speed(goalkeeper::angle, goalkeeper::speed, angle);*/
-    //move_angle_speed(0, 150, 0);
+    //move_angle_speed(0, 0, ball::angle+robot::local_angle);
     /*Serial.print(ball::distance);
     Serial.print(' ');
     forward();

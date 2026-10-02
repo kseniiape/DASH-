@@ -208,20 +208,25 @@ void forward()
         {
             case 1: {
               if (millis() - timers::ball_lost <= 6000) {
-                  static float k_speed = 3;
+                  static float k_speed = 4;
                     //forward::angle = 0;
                     ball_capture();
                     angle = lead_to_degree_borders(ball::angle + robot::local_angle);
-                    if (abs(ball::angle) <= 10) {
+                    if (abs(ball::angle) <= 30 && ball::distance < 80) {
                       //Serial.println('+');
-                        dribler_power(1200);
+                        dribler_power(1100);
+                        if (ball::distance < 40) {
+                          dribler_power(1200);
+                        forward::speed = constrain(ball::distance*k_speed, 100, 180);
+                
+                        }
                         //forward::speed =constrain(ball::distance * k_speed, 100, 200);
                     }
                     else {
                       dribler_power(1000);
                       //if (ball::distance < 50) forward::speed = 0;
                       //else 
-                      forward::speed = 60;
+                      //forward::speed = 60;
                       //forward::speed = 0;
 
                     }
@@ -244,8 +249,8 @@ void forward()
               }
             case 2: {
                 angle = 180;
-                static int x_point1 = -35, y_point1 = 140;
-                static int x_point2 = 35, y_point2 = 140;
+                static int x_point1 = -40, y_point1 = 160;
+                static int x_point2 = 40, y_point2 = 160;
                 int x_point_near = 0, y_point_near = 0;
                 if (sqrt(pow((x_point1-robot::x), 2) + pow(y_point1-robot::y, 2)) <= sqrt(pow((x_point2-robot::x), 2) + pow(y_point2-robot::y, 2))) {
                   x_point_near = x_point1;
@@ -257,7 +262,7 @@ void forward()
                 }
 
                 if (millis() - timers::state_forward1 < 300) {
-                  dribler_power(1400);
+                  dribler_power(1300);
                   forward::speed = 0;
                 }
                 else {
@@ -277,7 +282,7 @@ void forward()
                 //forward::speed = 0;
               }
             case 3: {
-              dribler_power(1400);
+              dribler_power(1500);
                 angle = 180;
               //Serial.print('+');
               //Serial.println(if_ball_in_leadle1);
@@ -285,8 +290,8 @@ void forward()
                 else {*/
                   dribler_power(1500);
                     //kick();
-                    turn(255*((abs(robot::x))/robot::x));
-                    delay(260);
+                    turn(-150*((abs(robot::x))/robot::x));
+                    delay(700);
                     kick_low();
                     dribler_power(1000);
                     state = 1; 
@@ -299,10 +304,15 @@ void forward()
               }
 
               case 4: {
-              dribler_power(1200);
+                if (millis() - timers::state_forward1 < 300) {
+                  dribler_power(1300);
+                  forward::speed = 0;
+                }
+              dribler_power(1100);
               if (goal::enemy::if_notice) angle = goal::enemy::local_angle + robot::local_angle;
               else angle = 0;
-              if (goal::enemy::distance <= 100 && (abs(goal::enemy::local_angle) <= 20 || (robot::local_angle ==0 && !goal::enemy::if_notice))) {
+              if (goal::enemy::distance <= 120 && ((abs(goal::enemy::local_angle) <= 20 && goal::enemy::if_notice) || (!goal::enemy::if_notice &&abs(goal::our::local_angle) >= 160 ))) {
+                dribler_power(1000);
                 kick();
                 dribler_power(1000);
                 
@@ -313,7 +323,7 @@ void forward()
               //Serial.println(if_ball_in_leadle1);
                 if (!if_ball_in_leadle1) state = 1;
                 timers::state_forward2 = millis();
-                timers::state_forward1 = millis();
+                //timers::state_forward1 = millis();
                 break;
               }
         }

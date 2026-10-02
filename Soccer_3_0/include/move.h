@@ -49,7 +49,7 @@ void turn(int num)
 {
   motor1(-num);
   motor2(-num);
-  motor3(num);
+  motor3(-num);
   motor4(num);
 }
 

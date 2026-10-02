@@ -66,7 +66,7 @@ void kick()
   {
     digitalWrite(KICK_PIN1, 0);
     digitalWrite(KICK_PIN1, 1);
-    delay(15);
+    delay(20);
     digitalWrite(KICK_PIN1, 0);
     timers::kick = millis();
   }
@@ -139,7 +139,7 @@ void if_sen_leadle1()
   uint16_t opto_sens = analogRead(SEN_LEADLE1);
   //Serial.println(opto_sens);
   //delay(100);
-   if ((opto_sens > 400 || opto_sens < 30) && (abs(ball::angle)  < 50))
+   if ((opto_sens > 400) && (abs(ball::angle)  < 50))
   {
     if_ball_in_leadle1 = true;
     timers::leadle1 = millis();
