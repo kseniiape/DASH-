@@ -25,7 +25,7 @@ int16_t exponential_detour(double ball_angle, double distance, double k1_angle, 
   if (angK > 90)
     angK = 90;
 
-  distance = convert_dist(min_dist_to_ball, distance);
+  distance = convert_dist(130, distance);
 
   double distK = k1_dist * pow(ec, double(k2_dist * distance));
 
@@ -43,8 +43,8 @@ double _data;
 
 void ball_capture()
 {
-    forward::angle = ball::angle + exponential_detour(ball::angle, ball::distance, 0.5, 0.13, 0.2, 1.5);//0.022, 0.142, 23, 60
-    forward::speed = 200;
+    forward::angle = ball::angle + exponential_detour(ball::angle, ball::distance, 0.4, 0.13, 0.2, 1.4);//0.022, 0.142, 23, 60
+    forward::speed = 180;
     //if(ball::distance > 7 && abs(ball::angle) > 25) forward::speed = 170;
     //move_angle_speed(forward::angle, forward::speed, 0);
     //Serial.println(forward::angle);
@@ -159,10 +159,10 @@ void forward()
             case 1:
               if (millis() - timers::ball_lost <= 6000) {
                 ball_capture();
-                if(abs(ball::angle) <= 40 && ball::distance < 30) dribler_power(1200);
+                if(abs(ball::angle) <= 30 && ball::distance < 40) dribler_power(1200);
                 else dribler_power(1000);
                 if (if_ball_in_leadle1) state = 2;
-                if (abs(ball::angle) < 25 && ball::distance < 35) forward::speed = constrain(forward::speed, -120, 120);
+                if (abs(ball::angle) < 25 && ball::distance < 35) forward::speed = constrain(forward::speed, -80, 100);
                 //if (abs(ball::angle) < 7 && ball::distance < 5) state = 3;
                 //forward::speed = 130 +k_angle*abs(ball::angle) + k_distance*ball::distance; 
               }
@@ -317,8 +317,8 @@ void forward()
               dribler_power(1200);
               if (goal::enemy::if_notice) angle = goal::enemy::local_angle + robot::local_angle;
               else angle = 0;
-              if ( goal::enemy::if_notice&& goal::enemy::distance <= 120 && ((abs(goal::enemy::local_angle) <= 18 && goal::enemy::if_notice) )) { //|| (!goal::enemy::if_notice &&abs(goal::our::local_angle +) >= 160 )
-              if (ball::distance <= 13) {
+              if ( goal::enemy::if_notice&& goal::enemy::distance <= 110 && ((abs(goal::enemy::local_angle) <= 15 && goal::enemy::if_notice) )) { //|| (!goal::enemy::if_notice &&abs(goal::our::local_angle +) >= 160 )
+              if (ball::distance <= 12) {
                 dribler_power(1000);
                 //delay(20);
                 kick();

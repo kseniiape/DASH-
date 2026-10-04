@@ -21,7 +21,7 @@ double x_soft= 0, y_soft = 0, k_ball = 0.2;
 //Дистанция до мяча при которой (или меньше) начинается объезд по окружности
 const float min_dist_to_ball = 130;
 
-bool dribler = 1;
+bool dribler = 0;
 struct tssop
 {
     const static inline int ir_addr[16][4] = {
@@ -58,7 +58,7 @@ struct ball
     static inline double angle_camera = 0;
     static inline float prev_distance = 0;
     #if ROLE == 1
-    static inline double null_angle = 10;
+    static inline double null_angle = 0;
     #else
     static inline double null_angle = 0;
     #endif
@@ -83,14 +83,15 @@ struct forward
 
     struct right_near_point
     {
-      static inline int x = -33;
+      static inline int x = -40;
+      
       static inline int y = 50;
     };
 
     struct left_far_point
     {
-      static inline int x = 33;
-      static inline int y = 155;
+      static inline int x = 40;
+      static inline int y = 150;
     };
   };
 

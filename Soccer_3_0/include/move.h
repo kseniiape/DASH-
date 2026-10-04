@@ -27,7 +27,7 @@ int turn_angle (int angle) {
   Serial.println(u);*/
   
   
-  u =constrain(u, -40, 40);
+  u =constrain(u, -70, 70);
   //u =constrain(u, -50, 50); 
   err_old_angle = err_angle;
   err_i_angle += kI_turn_angle*err_angle;

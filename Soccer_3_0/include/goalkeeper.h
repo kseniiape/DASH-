@@ -319,6 +319,7 @@ void goalkeeper_light() {
                 
             }
    move_angle_speed(goalkeeper::angle, goalkeeper::speed, 0);
+   if(if_ball_in_leadle1) kick();
     }
 
 }
