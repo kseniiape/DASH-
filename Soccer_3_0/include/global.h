@@ -1,7 +1,7 @@
 #pragma once
 #include "Arduino.h"
 
-const float k_coordinates = 0.8;
+const float k_coordinates = 1;
 const int speed_constrain = 120;
 
 #if ROLE == 1
@@ -58,9 +58,9 @@ struct ball
     static inline double angle_camera = 0;
     static inline float prev_distance = 0;
     #if ROLE == 1
-    static inline double null_angle = 0;
+    static inline double null_angle = 10;
     #else
-    static inline double null_angle = 8;
+    static inline double null_angle = 0;
     #endif
     
 };
@@ -83,14 +83,14 @@ struct forward
 
     struct right_near_point
     {
-      static inline int x = -40;
-      static inline int y = 65;
+      static inline int x = -33;
+      static inline int y = 50;
     };
 
     struct left_far_point
     {
-      static inline int x = 40;
-      static inline int y = 170;
+      static inline int x = 33;
+      static inline int y = 155;
     };
   };
 
@@ -149,7 +149,7 @@ struct timers
 
 struct goalkeeper
 {
-  static inline const int R = 90;
+  static inline const int R = 80;
   static inline int constrain_y = 210;
   static inline int constrain_x = 210;
   
@@ -163,13 +163,13 @@ struct goalkeeper
 
     struct right_point
     {
-      static inline int x = -20;
-      static inline int y = 20;
+      static inline int x = -25;
+      static inline int y = 33;
     };
 
     struct left_point
     {
-      static inline int x =20;
+      static inline int x =25;
       static inline int y = goalkeeper::outs::right_point::y;
     };
   };
@@ -178,7 +178,7 @@ struct goalkeeper
   {
     static inline int major_semi_axis = 50;
     static inline int minor_axis = 48;
-    static inline int y_center = goal::our::y-60;
+    static inline int y_center = goal::our::y-50;
     static inline int x_center = goal::our::x;
   };
 
@@ -187,16 +187,16 @@ struct goalkeeper
     static inline float ball_error_kP = 0.5;
     struct y
     {
-      static inline float kP = 3;
+      static inline float kP = 3.2;
       static inline float kD = 0;
       static inline float kI = 0.001;
     };
     
     struct x
     {
-      static inline float kP = 3.8;
+      static inline float kP = 4.3;
       static inline float kD = 0;
-      static inline float kI = 0.005;
+      static inline float kI = 0.008;
     };
 
   };

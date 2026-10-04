@@ -147,7 +147,7 @@ void loop()
     forward();
     Serial.println(robot::local_angle);*/
     //goalkeeper_s();
-    //dribler_power(1400);
+    //dribler_power(1200);
     //goalkeeper_s();
     //move_angle_speed(0, 0, ball::angle+robot::local_angle);
     //move_to_point(30, 100);
@@ -157,7 +157,8 @@ void loop()
     move_angle_speed(forward::angle, forward::speed, angle);*/
     //turn(200);
     #else
-    goalkeeper_s();
+    goalkeeper_light();
+    //goalkeeper_s();
     //line_goal_ball();
     //move_angle_speed(0, 0, 0);
     //ball_capture();

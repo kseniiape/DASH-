@@ -15,7 +15,7 @@
 void robot_update();
 
 void ball_distance_angle() {
-    ball::angle = ball::angle_camera; 
+    ball::angle = lead_to_degree_borders( ball::angle_camera + ball::null_angle); 
     ball::distance = ball::distance_camera;
     
   /*if (ball::angle_tssop == 0 && ball::distance_tssop < 1) {
@@ -132,6 +132,10 @@ void coordinates_robot()
   y_soft_c = k_coordinates * robot::y + y_soft_c * (1 - k_coordinates);
   robot::x = x_soft_c;
   robot::y = y_soft_c;
+  Serial.print(robot::x);
+  Serial.print(" ");
+  Serial.println(robot::y);
+
 }
 
 void if_sen_leadle1()
@@ -139,14 +143,14 @@ void if_sen_leadle1()
   uint16_t opto_sens = analogRead(SEN_LEADLE1);
   //Serial.println(opto_sens);
   //delay(100);
-   if ((opto_sens > 400) && (abs(ball::angle)  < 50))
+   if ((((opto_sens > 400) || (opto_sens) < 20) && abs(ball::angle)  < 30) || (abs(ball::angle)  < 13 && ball::distance < 15))
   {
     if_ball_in_leadle1 = true;
     timers::leadle1 = millis();
   }
     else
   {
-    if ((millis() - timers::leadle1) > 10) if_ball_in_leadle1 = false; 
+    if ((millis() - timers::leadle1) > 40) if_ball_in_leadle1 = false; 
   }
 }
 

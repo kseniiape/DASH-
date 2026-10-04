@@ -43,8 +43,8 @@ double _data;
 
 void ball_capture()
 {
-    forward::angle = ball::angle + exponential_detour(ball::angle, ball::distance, 0.4, 0.13, 0.21, 1.5);//0.022, 0.142, 23, 60
-    forward::speed = 210;
+    forward::angle = ball::angle + exponential_detour(ball::angle, ball::distance, 0.5, 0.13, 0.2, 1.5);//0.022, 0.142, 23, 60
+    forward::speed = 200;
     //if(ball::distance > 7 && abs(ball::angle) > 25) forward::speed = 170;
     //move_angle_speed(forward::angle, forward::speed, 0);
     //Serial.println(forward::angle);
@@ -159,10 +159,10 @@ void forward()
             case 1:
               if (millis() - timers::ball_lost <= 6000) {
                 ball_capture();
-                if(abs(ball::angle) <= 10  && ball::distance < 40) dribler_power(1200);
+                if(abs(ball::angle) <= 40 && ball::distance < 30) dribler_power(1200);
                 else dribler_power(1000);
                 if (if_ball_in_leadle1) state = 2;
-                if (abs(ball::angle) < 25 && ball::distance < 30) forward::speed = constrain(forward::speed, -120, 120);
+                if (abs(ball::angle) < 25 && ball::distance < 35) forward::speed = constrain(forward::speed, -120, 120);
                 //if (abs(ball::angle) < 7 && ball::distance < 5) state = 3;
                 //forward::speed = 130 +k_angle*abs(ball::angle) + k_distance*ball::distance; 
               }
@@ -176,8 +176,8 @@ void forward()
                 dribler_power(1200);
                 timers::ball_lost = millis();
                 forward::angle = 0;
-                forward::speed = 200;
-                if (goal::enemy::distance < 120 && (millis() - timers::ball_capture) > 30) state = 3;
+                forward::speed = 230;
+                if (goal::enemy::distance < 160 && (millis() - timers::ball_capture) > 30 && abs(goal::enemy::local_angle) <= 25)  state = 3;
                 //else 
                 if (!if_ball_in_leadle1) state = 1;
                 break;
@@ -185,7 +185,7 @@ void forward()
             case 3:
                 dribler_power(1000);
                 forward::angle = 0;
-                forward::speed = 200;
+                forward::speed = 230;
                 kick();
                 if (!if_ball_in_leadle1) state = 1;
                 //else state = 2;
@@ -212,12 +212,12 @@ void forward()
                     //forward::angle = 0;
                     ball_capture();
                     angle = lead_to_degree_borders(ball::angle + robot::local_angle);
-                    if (abs(ball::angle) <= 30 && ball::distance < 80) {
+                    if (abs(ball::angle) <= 30 && ball::distance < 60) {
                       //Serial.println('+');
-                        dribler_power(1100);
-                        if (ball::distance < 40) {
+                        dribler_power(1200);
+                        if (ball::distance <= 30) {
                           dribler_power(1200);
-                        forward::speed = constrain(ball::distance*k_speed, 100, 180);
+                        forward::speed = constrain(ball::distance*k_speed, 70, 120);
                 
                         }
                         //forward::speed =constrain(ball::distance * k_speed, 100, 200);
@@ -234,8 +234,11 @@ void forward()
                     //if (ball::distance >= 40) forward::speed = 180;
 
 
-                    if (if_ball_in_leadle1 && (goal::enemy::distance >= 130 ||abs(robot::local_angle) >= 90)) state = 2;
-                    else if (if_ball_in_leadle1) state = 4;
+                    //if (if_ball_in_leadle1 && (goal::enemy::distance >= 150 ||abs(robot::local_angle) >= 90)) state = 2;
+                    //else if (if_ball_in_leadle1) state = 4;
+                    if (if_ball_in_leadle1) state = 4;
+                    //if (if_ball_in_leadle1)  forward::speed = 0;
+
                     //timers::state_forward1 = millis();
                     timers::state_forward1 = millis();
                     timers::state_forward2 = millis();
@@ -244,6 +247,8 @@ void forward()
                     move_to_point(0, 110);
                     forward::angle = goalkeeper::angle;
                     forward::speed = goalkeeper::speed;
+                    timers::state_forward1 = millis();
+                    timers::state_forward2 = millis();
               }
                 break;
               }
@@ -261,12 +266,14 @@ void forward()
                   y_point_near = y_point2;
                 }
 
-                if (millis() - timers::state_forward1 < 300) {
-                  dribler_power(1300);
+                if (millis() - timers::state_forward1 < 400) {
+                  //Serial.println("+");
+                  dribler_power(1200);
                   forward::speed = 0;
+                  angle = lead_to_degree_borders(ball::angle + robot::local_angle);
                 }
                 else {
-                    dribler_power(1500);
+                    dribler_power(1200);
                     move_to_point(x_point_near, y_point_near);
                     forward::angle = goalkeeper::angle;
                     forward::speed = goalkeeper::speed;
@@ -282,16 +289,18 @@ void forward()
                 //forward::speed = 0;
               }
             case 3: {
-              dribler_power(1500);
+              dribler_power(1200);
                 angle = 180;
               //Serial.print('+');
               //Serial.println(if_ball_in_leadle1);
                 /*if (millis() - timers::state_forward2 < 500) forward::speed = 0;
                 else {*/
-                  dribler_power(1500);
+                  dribler_power(1000);
                     //kick();
                     turn(-150*((abs(robot::x))/robot::x));
-                    delay(700);
+                    delay(100);
+                    turn(-255*((abs(robot::x))/robot::x));
+                    delay(200);
                     kick_low();
                     dribler_power(1000);
                     state = 1; 
@@ -304,24 +313,36 @@ void forward()
               }
 
               case 4: {
-                if (millis() - timers::state_forward1 < 300) {
-                  dribler_power(1300);
-                  forward::speed = 0;
-                }
-              dribler_power(1100);
+                
+              dribler_power(1200);
               if (goal::enemy::if_notice) angle = goal::enemy::local_angle + robot::local_angle;
               else angle = 0;
-              if (goal::enemy::distance <= 120 && ((abs(goal::enemy::local_angle) <= 20 && goal::enemy::if_notice) || (!goal::enemy::if_notice &&abs(goal::our::local_angle) >= 160 ))) {
+              if ( goal::enemy::if_notice&& goal::enemy::distance <= 120 && ((abs(goal::enemy::local_angle) <= 18 && goal::enemy::if_notice) )) { //|| (!goal::enemy::if_notice &&abs(goal::our::local_angle +) >= 160 )
+              if (ball::distance <= 13) {
                 dribler_power(1000);
+                //delay(20);
                 kick();
                 dribler_power(1000);
-                
+              }
               }
               forward::speed = 190;
               forward::angle = 0;
               //Serial.print('+');
               //Serial.println(if_ball_in_leadle1);
                 if (!if_ball_in_leadle1) state = 1;
+                if (millis() - timers::state_forward1 < 300) {
+                  //Serial.println("+");
+                  dribler_power(1200);
+                  forward::speed = 0;
+                  angle = lead_to_degree_borders(ball::angle + robot::local_angle);
+                }
+                if (abs(goal::enemy::local_angle - robot::local_angle) >= 30) {
+                  forward::speed = 0;
+                }
+                //Serial.println("-");
+                //forward::speed = 0;
+                //if (!if_ball_in_leadle1) state = 1;
+
                 timers::state_forward2 = millis();
                 //timers::state_forward1 = millis();
                 break;
@@ -330,6 +351,7 @@ void forward()
         
     }
   control_outs_forward(forward::angle, forward::speed);
+    //Serial.println(forward::speed);
 
    /*Serial.print(forward::angle);
     Serial.print(' ');

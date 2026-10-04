@@ -51,6 +51,5 @@
 #define CHARGE_LED_PIN 41
 
 #define ec 2.7182
-#define ROLE 1 // 1 - f, 2 - g
-
+#define ROLE 1// 1 - f, 2 - g
 Servo esc;
