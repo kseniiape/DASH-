@@ -132,9 +132,9 @@ void coordinates_robot()
   y_soft_c = k_coordinates * robot::y + y_soft_c * (1 - k_coordinates);
   robot::x = x_soft_c;
   robot::y = y_soft_c;
-  Serial.print(robot::x);
+  /*Serial.print(robot::x);
   Serial.print(" ");
-  Serial.println(robot::y);
+  Serial.println(robot::y);*/
 
 }
 
@@ -143,7 +143,9 @@ void if_sen_leadle1()
   uint16_t opto_sens = analogRead(SEN_LEADLE1);
   //Serial.println(opto_sens);
   //delay(100);
-   if ((((opto_sens > 400) || (opto_sens) < 20) && abs(ball::angle)  < 30) || (abs(ball::angle)  < 13 && ball::distance < 14) && (ball::angle != 0 && ball::distance != 0))
+   //if ((((opto_sens > 400) || (opto_sens) < 20) && abs(ball::angle)  < 30) || (abs(ball::angle)  < 13 && ball::distance < 14) && (ball::angle != 0 && ball::distance != 0))
+    if ((ball::distance <= 11 && abs(ball::angle) <= 5) && (ball::angle || ball::distance))
+
   {
     if_ball_in_leadle1 = true;
     timers::leadle1 = millis();

@@ -48,7 +48,7 @@
 #define CHARGE_PIN A6 
 
 /////см физ плата
-#define CHARGE_LED_PIN 41
+#define CHARGE_LED_PIN 45
 
 #define ec 2.7182
 #define ROLE 1// 1 - f, 2 - g

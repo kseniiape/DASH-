@@ -97,6 +97,10 @@ void setup()
 
 void loop()
 {
+  /*Serial.print(ball::angle);
+  Serial.print(" ");
+  Serial.println(ball::distance);*/
+
   //SSerial.println(gyro::angle);
    //Serial.println(ball::angle);
   //timers::test = millis();
@@ -131,11 +135,13 @@ void loop()
     //dribler_power(1500);
     //ball_capture();
     #if ROLE == 1
+    //dribler_power(1800);
     //move_angle_speed(0, 0, 0);
 
     //line_goal_ball();
     //goalkeeper_s();
     forward();
+    //dribler_power(1600);
     //turn(255);
     //turn(255);
     /*move_to_point(-30, 170);
@@ -157,10 +163,14 @@ void loop()
     move_angle_speed(forward::angle, forward::speed, angle);*/
     //turn(200);
     #else
-    goalkeeper_light();
+    //goalkeeper_light();
     //goalkeeper_s();
     //line_goal_ball();
-    //move_angle_speed(0, 0, 0);
+    //move_angle_speed(0, 200, 0);
+    //delay(3000);
+    //move_angle_speed(0, -200, 0);
+    //delay(3000);
+
     //ball_capture();
     //forward();
     

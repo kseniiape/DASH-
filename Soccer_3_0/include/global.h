@@ -21,7 +21,7 @@ double x_soft= 0, y_soft = 0, k_ball = 0.2;
 //Дистанция до мяча при которой (или меньше) начинается объезд по окружности
 const float min_dist_to_ball = 130;
 
-bool dribler = 0;
+bool dribler = 1;
 struct tssop
 {
     const static inline int ir_addr[16][4] = {
@@ -150,7 +150,7 @@ struct timers
 
 struct goalkeeper
 {
-  static inline const int R = 80;
+  static inline const int R = 75;
   static inline int constrain_y = 210;
   static inline int constrain_x = 210;
   
@@ -164,13 +164,13 @@ struct goalkeeper
 
     struct right_point
     {
-      static inline int x = -25;
-      static inline int y = 33;
+      static inline int x = -27;
+      static inline int y = 30;
     };
 
     struct left_point
     {
-      static inline int x =25;
+      static inline int x =27;
       static inline int y = goalkeeper::outs::right_point::y;
     };
   };

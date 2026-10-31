@@ -97,7 +97,7 @@ void move_angle_speed (double angle, int speed_m, double angle_turn)
     float a = turn_angle(angle_turn);
     //int a = 0;
 
-    int speed1 = -_current_movement[1] * cos(angle1 / 57.3) - a;
+    int speed1 = _current_movement[1] * cos(angle1 / 57.3) + a;
     int speed3 = _current_movement[1] * cos(angle3 / 57.3)+ a;
     int speed2 = -_current_movement[1] * cos(angle2 / 57.3)+a;
     int speed4 = _current_movement[1] * cos(angle4 / 57.3)- a;
