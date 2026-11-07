@@ -143,16 +143,16 @@ void if_sen_leadle1()
   uint16_t opto_sens = analogRead(SEN_LEADLE1);
   //Serial.println(opto_sens);
   //delay(100);
-   //if ((((opto_sens > 400) || (opto_sens) < 20) && abs(ball::angle)  < 30) || (abs(ball::angle)  < 13 && ball::distance < 14) && (ball::angle != 0 && ball::distance != 0))
-    if ((ball::distance <= 11 && abs(ball::angle) <= 5) && (ball::angle || ball::distance))
-
+   //if ((((opto_sens > 920) || (opto_sens) < 20) && abs(ball::angle)  < 30) || (abs(ball::angle)  < 13 && ball::distance < 14) && (ball::angle != 0 && ball::distance != 0))
+    //if ((ball::distance <= 11 && abs(ball::angle) <= 5) && (ball::angle || ball::distance))
+    if( ( ((opto_sens >= 900) || (opto_sens) < 20) && abs(ball::angle)  <= 6 && ball::distance <= 12) || (abs(ball::angle)  <= 5 && ball::distance <=12 && ball::angle != 0 && ball::distance != 0))
   {
     if_ball_in_leadle1 = true;
     timers::leadle1 = millis();
   }
     else
   {
-    if ((millis() - timers::leadle1) > 40) if_ball_in_leadle1 = false; 
+    if ((millis() - timers::leadle1) > 50) if_ball_in_leadle1 = false; 
   }
 }
 

@@ -97,9 +97,9 @@ void setup()
 
 void loop()
 {
-  /*Serial.print(ball::angle);
+  Serial.print(ball::angle);
   Serial.print(" ");
-  Serial.println(ball::distance);*/
+  Serial.println(ball::distance);
 
   //SSerial.println(gyro::angle);
    //Serial.println(ball::angle);

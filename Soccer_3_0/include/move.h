@@ -27,7 +27,7 @@ int turn_angle (int angle) {
   Serial.println(u);*/
   
   
-  u =constrain(u, -70, 70);
+  u =constrain(u, -50, 50);
   //u =constrain(u, -50, 50); 
   err_old_angle = err_angle;
   err_i_angle += kI_turn_angle*err_angle;
@@ -59,7 +59,7 @@ void move_angle_speed (double angle, int speed_m, double angle_turn)
   double _y1, _y2, _y3, _y4;
   double _L;
   double _alpha;
-  static int _dL = 20;
+  static int _dL = 7;
   static int  _current_movement[2] = {angle, speed_m},  _wanted_movement[2] = {angle, speed_m};
   _wanted_movement[0] = angle; _wanted_movement[1] = speed_m;
   _x1 = sin( _current_movement[0] / 57.3) * _current_movement[1];

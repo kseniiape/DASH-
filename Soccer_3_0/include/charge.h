@@ -7,12 +7,11 @@
 void control_charge() {
     static int power = 1;
     int charge = analogRead(CHARGE_PIN);
-    if (charge <= 768) {
+    if (charge <= 600) {
         stop_motors = 1;
         power = 0;
     }
-    else if (charge <= 853) {
-        
+    else if (charge <= 800) {
         power = (power == 1? 0:1);
     }
     else {
